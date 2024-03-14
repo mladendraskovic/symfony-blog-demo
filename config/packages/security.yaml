@@ -30,6 +30,10 @@ security:
                 check_path: app_login
                 enable_csrf: true
 
+            remember_me:
+                secret: '%kernel.secret%' # required
+                lifetime: 604800 # 1 week in seconds
+
             login_throttling:
                 max_attempts: 5 # per minute
 

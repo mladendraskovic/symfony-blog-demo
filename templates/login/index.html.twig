@@ -25,6 +25,13 @@
                         <input type="password" class="form-control" id="password" name="_password" required>
                     </div>
 
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="remember_me" name="_remember_me">
+                        <label class="form-check-label" for="remember_me">
+                            Keep me logged in
+                        </label>
+                    </div>
+
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
                     <button type="submit" class="btn btn-primary">Login</button>
