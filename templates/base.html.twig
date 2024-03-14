@@ -19,6 +19,10 @@
         {% endblock %}
     </head>
     <body class="min-vh-100">
-        {% block body %}{% endblock %}
+        {% include './partials/navbar.html.twig' %}
+
+        <main style="padding-top: 56px">
+            {% block body %}{% endblock %}
+        </main>
     </body>
 </html>
