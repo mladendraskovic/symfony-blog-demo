@@ -5,6 +5,8 @@
 {% block body %}
     <h1 class="mb-3">Users management</h1>
 
+    {% include 'partials/_flash_messages.html.twig' %}
+
     <a href="{{ path('app_user_new') }}" class="btn btn-primary">Create new</a>
 
     <div class="table-responsive">
