@@ -27,7 +27,7 @@ class UserController extends AbstractController
         $pagination = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
-            1
+            10
         );
 
         return $this->render('user/index.html.twig', [
@@ -87,7 +87,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="app_user_delete", methods={"POST"})
+     * @Route("/{id}/delete", name="app_user_delete", methods={"POST"})
      */
     public function delete(Request $request, User $user, UserRepository $userRepository): Response
     {

@@ -19,10 +19,15 @@
         {% endblock %}
     </head>
     <body class="min-vh-100">
-        {% include './partials/navbar.html.twig' %}
+        {% include 'partials/navbar.html.twig' %}
 
-        <main style="padding-top: 56px">
+        <main class="container mt-5" style="padding-top: 56px">
             {% block body %}{% endblock %}
         </main>
+
+        <script defer>
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        </script>
     </body>
 </html>
