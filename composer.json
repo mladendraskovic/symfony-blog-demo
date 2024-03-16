@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^2.11",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^2.19",
+        "gedmo/doctrine-extensions": "^3.15",
         "knplabs/knp-paginator-bundle": "^5.9",
         "sensio/framework-extra-bundle": "^6.2",
         "symfony/console": "5.4.*",
