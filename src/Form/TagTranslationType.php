@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\TagTranslation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,10 +17,12 @@ class TagTranslationType extends AbstractType
             ->add('locale', ChoiceType::class, [
                 'choices' => [
                     'English' => 'en',
-                    'French' => 'fr',
+                    'Croatian' => 'hr',
                 ],
             ])
-            ->add('name')
+            ->add('content', TextType::class, [
+                'label' => 'Name',
+            ])
         ;
     }
 

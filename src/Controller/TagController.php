@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Tag;
+use App\Entity\TagTranslation;
 use App\Form\TagType;
 use App\Repository\TagRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -47,6 +48,11 @@ class TagController extends AbstractController
     public function new(Request $request, TagRepository $tagRepository): Response
     {
         $tag = new Tag();
+
+        $translation = new TagTranslation('en', 'name', 'Tag name');
+
+        $tag->addTranslation($translation);
+
         $form = $this->createForm(TagType::class, $tag);
         $form->handleRequest($request);
 

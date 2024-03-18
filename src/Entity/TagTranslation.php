@@ -35,4 +35,9 @@ class TagTranslation extends AbstractPersonalTranslation
         $this->setField($field);
         $this->setContent($value);
     }
+
+    public function __toString()
+    {
+        return $this->getContent();
+    }
 }

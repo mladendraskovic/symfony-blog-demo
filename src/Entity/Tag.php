@@ -73,6 +73,11 @@ class Tag
         }
     }
 
+    public function removeTranslation(TagTranslation $t)
+    {
+        $this->translations->removeElement($t);
+    }
+
     public function setTranslatableLocale($locale)
     {
         $this->locale = $locale;
