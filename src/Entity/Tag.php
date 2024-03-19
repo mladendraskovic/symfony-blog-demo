@@ -21,19 +21,6 @@ class Tag
     private $id;
 
     /**
-     * @Gedmo\Translatable
-     * @ORM\Column(type="string", length=255)
-     */
-    private $name;
-
-    /**
-     * @Gedmo\Locale
-     * Used locale to override Translation listener`s locale
-     * this is not a mapped field of entity metadata, just a simple property
-     */
-    private $locale;
-
-    /**
      * @ORM\OneToMany(targetEntity="TagTranslation", mappedBy="object", cascade={"persist", "remove"})
      */
     private $translations;
@@ -58,28 +45,5 @@ class Tag
         $this->name = $name;
 
         return $this;
-    }
-
-    public function getTranslations(): ArrayCollection
-    {
-        return $this->translations;
-    }
-
-    public function addTranslation(TagTranslation $t)
-    {
-        if (!$this->translations->contains($t)) {
-            $this->translations[] = $t;
-            $t->setObject($this);
-        }
-    }
-
-    public function removeTranslation(TagTranslation $t)
-    {
-        $this->translations->removeElement($t);
-    }
-
-    public function setTranslatableLocale($locale)
-    {
-        $this->locale = $locale;
     }
 }
