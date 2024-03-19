@@ -4,12 +4,11 @@ namespace App\Entity;
 
 use App\Repository\TagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=TagRepository::class)
- * @Gedmo\TranslationEntity(class="App\Entity\TagTranslation")
  */
 class Tag
 {
@@ -21,7 +20,7 @@ class Tag
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="TagTranslation", mappedBy="object", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity=TagTranslation::class, mappedBy="tag", orphanRemoval=true)
      */
     private $translations;
 
@@ -35,14 +34,32 @@ class Tag
         return $this->id;
     }
 
-    public function getName(): ?string
+    /**
+     * @return Collection<int, TagTranslation>
+     */
+    public function getTranslations(): Collection
     {
-        return $this->name;
+        return $this->translations;
     }
 
-    public function setName(string $name): self
+    public function addTranslation(TagTranslation $translation): self
     {
-        $this->name = $name;
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTranslation(TagTranslation $translation): self
+    {
+        if ($this->translations->removeElement($translation)) {
+            // set the owning side to null (unless already changed)
+            if ($translation->getTag() === $this) {
+                $translation->setTag(null);
+            }
+        }
 
         return $this;
     }
