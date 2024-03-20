@@ -29,16 +29,11 @@ class TagController extends AbstractController
     /**
      * @Route("/", name="app_tag_index", methods={"GET"})
      */
-    public function index(EntityManagerInterface $entityManager, PaginatorInterface $paginator, Request $request): Response
+    public function index(TagRepository $tagRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $locale = $request->getLocale();
 
-        $query = $entityManager->createQuery('
-            SELECT t, tr FROM App\Entity\Tag t
-            INNER JOIN t.translations tr
-            WHERE tr.locale = :locale
-        ')
-            ->setParameter('locale', $locale);
+        $query = $tagRepository->getPaginationQuery($locale);
 
         $pagination = $paginator->paginate(
             $query,
@@ -92,15 +87,7 @@ class TagController extends AbstractController
         $tag = $tagRepository->find($id);
 
         return $this->render('admin/tag/show.html.twig', [
-            'tag' => [
-                'id' => $tag->getId(),
-                'name_en' => $tag->getTranslations()->filter(function(TagTranslation $translation) {
-                    return $translation->getLocale() === 'en';
-                })->first()->getName(),
-                'name_hr' => $tag->getTranslations()->filter(function(TagTranslation $translation) {
-                    return $translation->getLocale() === 'hr';
-                })->first()->getName(),
-            ]
+            'tag' => $tagRepository->getTagData($tag),
         ]);
     }
 
@@ -113,20 +100,15 @@ class TagController extends AbstractController
 
         $tag = $tagRepository->find($id);
 
-        $form = $this->createForm(TagType::class, [
-            'name_en' => $tag->getTranslations()->filter(function(TagTranslation $translation) {
-                return $translation->getLocale() === 'en';
-            })->first()->getName(),
-            'name_hr' => $tag->getTranslations()->filter(function(TagTranslation $translation) {
-                return $translation->getLocale() === 'hr';
-            })->first()->getName(),
-        ]);
+        $tagData = $tagRepository->getTagData($tag);
+
+        $form = $this->createForm(TagType::class, $tagData);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($locales as $locale) {
-                $translation = $tag->getTranslations()->filter(function(TagTranslation $translation) use ($locale) {
+                $translation = $tag->getTranslations()->filter(function (TagTranslation $translation) use ($locale) {
                     return $translation->getLocale() === $locale;
                 })->first();
 
@@ -141,15 +123,7 @@ class TagController extends AbstractController
         }
 
         return $this->renderForm('admin/tag/edit.html.twig', [
-            'tag' => [
-                'id' => $tag->getId(),
-                'name_en' => $tag->getTranslations()->filter(function(TagTranslation $translation) {
-                    return $translation->getLocale() === 'en';
-                })->first()->getName(),
-                'name_hr' => $tag->getTranslations()->filter(function(TagTranslation $translation) {
-                    return $translation->getLocale() === 'hr';
-                })->first()->getName(),
-            ],
+            'tag' => $tagData,
             'form' => $form,
         ]);
     }

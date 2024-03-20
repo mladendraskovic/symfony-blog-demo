@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Tag;
+use App\Entity\TagTranslation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,6 +21,29 @@ class TagRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Tag::class);
+    }
+
+    public function getPaginationQuery(string $locale): Query
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t, tr')
+            ->innerJoin('t.translations', 'tr')
+            ->where('tr.locale = :locale')
+            ->setParameter('locale', $locale)
+            ->getQuery();
+    }
+
+    public function getTagData(Tag $tag): array
+    {
+        return [
+            'id' => $tag->getId(),
+            'name_en' => $tag->getTranslations()->filter(function(TagTranslation $translation) {
+                return $translation->getLocale() === 'en';
+            })->first()->getName(),
+            'name_hr' => $tag->getTranslations()->filter(function(TagTranslation $translation) {
+                return $translation->getLocale() === 'hr';
+            })->first()->getName(),
+        ];
     }
 
     public function add(Tag $entity, bool $flush = false): void
