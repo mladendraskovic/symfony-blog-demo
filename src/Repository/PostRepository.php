@@ -36,8 +36,20 @@ class PostRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-    public function getPostData(Post $post): array
+    public function getPostData(Post $post, string $locale): array
     {
+        $tags = $this->getEntityManager()->createQueryBuilder()
+            ->select('t, tr')
+            ->from(Tag::class, 't')
+            ->innerJoin('t.translations', 'tr')
+            ->innerJoin('t.posts', 'p')
+            ->where('p.id = :id')
+            ->andWhere('tr.locale = :locale')
+            ->setParameter('id', $post->getId())
+            ->setParameter('locale', $locale)
+            ->getQuery()
+            ->getResult();
+
         return [
             'id' => $post->getId(),
             'author' => $post->getAuthor()->getName(),
@@ -61,12 +73,18 @@ class PostRepository extends ServiceEntityRepository
             'content_hr' => $post->getTranslations()->filter(function(PostTranslation $translation) {
                 return $translation->getLocale() === 'hr';
             })->first()->getContent(),
+            'tags' => array_map(function(Tag $tag) {
+                return [
+                    'id' => $tag->getId(),
+                    'name' => $tag->getTranslations()->first()->getName(),
+                ];
+            }, $tags),
             'created_at' => $post->getCreatedAt()->format('Y-m-d H:i:s'),
             'updated_at' => $post->getUpdatedAt()->format('Y-m-d H:i:s'),
         ];
     }
 
-    public function add(Post $entity, bool $flush = false): void
+    public function save(Post $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 

@@ -40,6 +40,20 @@
             <td>{{ post.author }}</td>
         </tr>
         <tr>
+            <th class="text-nowrap">Published At</th>
+            <td>{{ post.published_at }}</td>
+        </tr>
+        <tr>
+            <th class="text-nowrap">Tags</th>
+            <td>
+                {% for tag in post.tags %}
+                    <a href="{{ path('app_tag_show', {'id': tag.id}) }}">{{ tag.name }}</a>{% if not loop.last %}, {% endif %}
+                {% else %}
+                    <span>-</span>
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
             <th class="text-nowrap">Created At</th>
             <td>{{ post.created_at }}</td>
         </tr>

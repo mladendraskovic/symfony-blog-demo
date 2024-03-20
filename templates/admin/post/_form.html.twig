@@ -18,6 +18,9 @@
         <div class="col-md-6">
             {{ form_row(form.content_hr) }}
         </div>
+        <div class="col-md-6">
+            {{ form_row(form.tags) }}
+        </div>
     </div>
     <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

@@ -6,6 +6,7 @@ use App\Entity\Post;
 use App\Entity\PostTranslation;
 use App\Form\PostType;
 use App\Repository\PostRepository;
+use App\Repository\TagRepository;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -51,7 +52,7 @@ class PostController extends AbstractController
     /**
      * @Route("/new", name="app_post_new", methods={"GET", "POST"})
      */
-    public function new(Request $request, PostRepository $postRepository): Response
+    public function new(Request $request, PostRepository $postRepository, TagRepository $tagRepository): Response
     {
         $locales = $this->params->get('kernel.enabled_locales');
 
@@ -65,6 +66,12 @@ class PostController extends AbstractController
             $post->setPublishedAt(new DateTimeImmutable($form->get('published_at')->getData()));
             $post->setImage('default.jpg');
 
+            $tags = $tagRepository->findBy(['id' => $form->get('tags')->getData()]);
+
+            foreach ($tags as $tag) {
+                $post->addTag($tag);
+            }
+
             foreach ($locales as $locale) {
                 $translation = new PostTranslation();
                 $translation->setLocale($locale);
@@ -73,7 +80,7 @@ class PostController extends AbstractController
                 $post->addTranslation($translation);
             }
 
-            $postRepository->add($post, true);
+            $postRepository->save($post, true);
 
             $this->addFlash('success', 'Post created successfully!');
 
@@ -89,21 +96,21 @@ class PostController extends AbstractController
     /**
      * @Route("/{id}", name="app_post_show", methods={"GET"})
      */
-    public function show(Post $post, PostRepository $postRepository): Response
+    public function show(Request $request, Post $post, PostRepository $postRepository): Response
     {
         return $this->render('admin/post/show.html.twig', [
-            'post' => $postRepository->getPostData($post),
+            'post' => $postRepository->getPostData($post, $request->getLocale()),
         ]);
     }
 
     /**
      * @Route("/{id}/edit", name="app_post_edit", methods={"GET", "POST"})
      */
-    public function edit(Request $request, Post $post, PostRepository $postRepository, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Post $post, PostRepository $postRepository, TagRepository $tagRepository): Response
     {
         $locales = $this->params->get('kernel.enabled_locales');
 
-        $postData = $postRepository->getPostData($post);
+        $postData = $postRepository->getPostData($post, $request->getLocale());
 
         $form = $this->createForm(PostType::class, $postData);
 
@@ -121,7 +128,14 @@ class PostController extends AbstractController
                 $translation->setContent($form->get("content_$locale")->getData());
             }
 
-            $entityManager->flush();
+            $tags = $tagRepository->findBy(['id' => $form->get('tags')->getData()]);
+            $post->getTags()->clear();
+
+            foreach ($tags as $tag) {
+                $post->addTag($tag);
+            }
+
+            $postRepository->save($post, true);
 
             $this->addFlash('success', 'Post updated successfully!');
 

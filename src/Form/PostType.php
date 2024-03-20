@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Repository\TagRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -17,8 +19,11 @@ use Symfony\Component\Validator\Constraints\Optional;
 
 class PostType extends AbstractType
 {
-    public function __construct()
+    private $tagRepository;
+
+    public function __construct(TagRepository $tagRepository)
     {
+        $this->tagRepository = $tagRepository;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -82,6 +87,14 @@ class PostType extends AbstractType
                     new NotBlank(),
                     new Length(['max' => 50000]),
                 ],
+            ])
+            ->add("tags", ChoiceType::class, [
+                'label' => 'Tags',
+                'required' => false,
+                'multiple' => true,
+                'data' => $options['data'] ? array_column($options['data']['tags'], 'id') : [],
+                'choices' => $this->tagRepository->getTagsForSelection(),
+                'constraints' => [],
             ]);
     }
 
