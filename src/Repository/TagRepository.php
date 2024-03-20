@@ -26,7 +26,8 @@ class TagRepository extends ServiceEntityRepository
     public function getPaginationQuery(string $locale): Query
     {
         return $this->createQueryBuilder('t')
-            ->select('t, tr')
+            ->select('t, tr, u')
+            ->innerJoin('t.user', 'u')
             ->innerJoin('t.translations', 'tr')
             ->where('tr.locale = :locale')
             ->setParameter('locale', $locale)
@@ -37,12 +38,15 @@ class TagRepository extends ServiceEntityRepository
     {
         return [
             'id' => $tag->getId(),
+            'user' => $tag->getUser()->getName(),
             'name_en' => $tag->getTranslations()->filter(function(TagTranslation $translation) {
                 return $translation->getLocale() === 'en';
             })->first()->getName(),
             'name_hr' => $tag->getTranslations()->filter(function(TagTranslation $translation) {
                 return $translation->getLocale() === 'hr';
             })->first()->getName(),
+            'created_at' => $tag->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updated_at' => $tag->getUpdatedAt()->format('Y-m-d H:i:s'),
         ];
     }
 

@@ -6,6 +6,7 @@ use App\Entity\Tag;
 use App\Entity\TagTranslation;
 use App\Form\TagType;
 use App\Repository\TagRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -59,6 +60,8 @@ class TagController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $tag->setUser($this->getUser());
+
             foreach ($locales as $locale) {
                 $translation = new TagTranslation();
                 $translation->setLocale($locale);
@@ -107,6 +110,8 @@ class TagController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $tag->setUpdatedAt(new DateTime());
+
             foreach ($locales as $locale) {
                 $translation = $tag->getTranslations()->filter(function (TagTranslation $translation) use ($locale) {
                     return $translation->getLocale() === $locale;

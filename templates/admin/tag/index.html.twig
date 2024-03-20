@@ -15,6 +15,8 @@
             <tr>
                 <th class="text-nowrap">ID</th>
                 <th class="text-nowrap">Name</th>
+                <th class="text-nowrap">Created by</th>
+                <th class="text-nowrap">Created At</th>
                 <th class="text-nowrap">Actions</th>
             </tr>
             </thead>
@@ -23,6 +25,8 @@
                 <tr>
                     <td class="text-nowrap">{{ tag.id }}</td>
                     <td class="text-nowrap">{{ tag.translations[0].name }}</td>
+                    <td class="text-nowrap">{{ tag.user.name }}</td>
+                    <td class="text-nowrap">{{ tag.createdAt|date('Y-m-d H:i:s') }}</td>
                     <td class="d-flex align-items-center gap-2">
                         <a href="{{ path('app_tag_show', {'id': tag.id}) }}" class="btn btn-primary btn-sm">Show</a>
                         <a href="{{ path('app_tag_edit', {'id': tag.id}) }}" class="btn btn-warning btn-sm">Edit</a>
