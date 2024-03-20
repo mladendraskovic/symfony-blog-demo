@@ -20,7 +20,7 @@ class Tag
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity=TagTranslation::class, mappedBy="tag", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=TagTranslation::class, mappedBy="tag", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $translations;
 

@@ -22,7 +22,7 @@
             {% for tag in pagination %}
                 <tr>
                     <td class="text-nowrap">{{ tag.id }}</td>
-                    <td class="text-nowrap">{{ tag.name }}</td>
+                    <td class="text-nowrap">{{ tag.translations[0].name }}</td>
                     <td class="d-flex align-items-center gap-2">
                         <a href="{{ path('app_tag_show', {'id': tag.id}) }}" class="btn btn-primary btn-sm">Show</a>
                         <a href="{{ path('app_tag_edit', {'id': tag.id}) }}" class="btn btn-warning btn-sm">Edit</a>

@@ -2,33 +2,43 @@
 
 namespace App\Form;
 
-use App\Entity\Tag;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class TagType extends AbstractType
 {
+    public function __construct()
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $constraints = [
+            new NotBlank(),
+            new Length(['max' => 255]),
+        ];
+
         $builder
-            ->add('translations', CollectionType::class, [
-                'entry_type' => TagTranslationType::class,
-                'entry_options' => ['label' => false],
-                'allow_add' => false,
-                'allow_delete' => false,
-                'by_reference' => false,
-//                'label' => false,
+            ->add("name_en", TextType::class, [
+                'label' => 'Name EN',
+                'required' => true,
+                'constraints' => $constraints,
             ])
-        ;
+            ->add("name_hr", TextType::class, [
+                'label' => 'Name HR',
+                'required' => true,
+                'constraints' => $constraints,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Tag::class,
+            'data_class' => null,
         ]);
     }
 }
