@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post details{% endblock %}
+
+{% block body %}
+    <h1>Post</h1>
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th class="text-nowrap">Id</th>
+            <td>{{ post.id }}</td>
+        </tr>
+        <tr>
+            <th class="text-nowrap">Title EN</th>
+            <td>{{ post.title_en }}</td>
+        </tr>
+        <tr>
+            <th class="text-nowrap">Title HR</th>
+            <td>{{ post.title_hr }}</td>
+        </tr>
+        <tr>
+            <th class="text-nowrap">Slug EN</th>
+            <td>{{ post.slug_en }}</td>
+        </tr>
+        <tr>
+            <th class="text-nowrap">Slug HR</th>
+            <td>{{ post.slug_hr }}</td>
+        </tr>
+        <tr>
+            <th class="text-nowrap">Content EN</th>
+            <td>{{ post.content_en }}</td>
+        </tr>
+        <tr>
+            <th class="text-nowrap">Content HR</th>
+            <td>{{ post.content_hr }}</td>
+        </tr>
+        <tr>
+            <th class="text-nowrap">Created By</th>
+            <td>{{ post.author }}</td>
+        </tr>
+        <tr>
+            <th class="text-nowrap">Created At</th>
+            <td>{{ post.created_at }}</td>
+        </tr>
+        <tr>
+            <th class="text-nowrap">Updated At</th>
+            <td>{{ post.updated_at }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="d-flex gap-2">
+        <a href="{{ path('app_post_index') }}" class="btn btn-secondary">Back to list</a>
+
+        <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn btn-warning">Edit</a>
+
+        {{ include('admin/post/_delete_form.html.twig') }}
+    </div>
+{% endblock %}

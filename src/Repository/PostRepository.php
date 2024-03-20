@@ -3,7 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Post;
+use App\Entity\PostTranslation;
+use App\Entity\Tag;
+use App\Entity\TagTranslation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,6 +23,47 @@ class PostRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Post::class);
+    }
+
+    public function getPaginationQuery(string $locale): Query
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p, pt, u')
+            ->innerJoin('p.translations', 'pt')
+            ->innerJoin('p.author', 'u')
+            ->where('pt.locale = :locale')
+            ->setParameter('locale', $locale)
+            ->getQuery();
+    }
+
+    public function getPostData(Post $post): array
+    {
+        return [
+            'id' => $post->getId(),
+            'author' => $post->getAuthor()->getName(),
+//            'image' => $post->getImage(),
+            'published_at' => $post->getPublishedAt()->format('Y-m-d'),
+            'title_en' => $post->getTranslations()->filter(function(PostTranslation $translation) {
+                return $translation->getLocale() === 'en';
+            })->first()->getTitle(),
+            'title_hr' => $post->getTranslations()->filter(function(PostTranslation $translation) {
+                return $translation->getLocale() === 'hr';
+            })->first()->getTitle(),
+            'slug_en' => $post->getTranslations()->filter(function(PostTranslation $translation) {
+                return $translation->getLocale() === 'en';
+            })->first()->getSlug(),
+            'slug_hr' => $post->getTranslations()->filter(function(PostTranslation $translation) {
+                return $translation->getLocale() === 'hr';
+            })->first()->getSlug(),
+            'content_en' => $post->getTranslations()->filter(function(PostTranslation $translation) {
+                return $translation->getLocale() === 'en';
+            })->first()->getContent(),
+            'content_hr' => $post->getTranslations()->filter(function(PostTranslation $translation) {
+                return $translation->getLocale() === 'hr';
+            })->first()->getContent(),
+            'created_at' => $post->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updated_at' => $post->getUpdatedAt()->format('Y-m-d H:i:s'),
+        ];
     }
 
     public function add(Post $entity, bool $flush = false): void

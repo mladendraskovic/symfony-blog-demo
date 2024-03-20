@@ -45,7 +45,7 @@ class Post
     private $tags;
 
     /**
-     * @ORM\OneToMany(targetEntity=PostTranslation::class, mappedBy="post", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=PostTranslation::class, mappedBy="post", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $translations;
 

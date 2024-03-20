@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PostTranslationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=PostTranslationRepository::class)
@@ -35,6 +36,7 @@ class PostTranslation
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Gedmo\Slug(fields={"title"}, unique=true)
      */
     private $slug;
 

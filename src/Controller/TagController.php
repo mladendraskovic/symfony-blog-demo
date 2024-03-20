@@ -85,10 +85,8 @@ class TagController extends AbstractController
     /**
      * @Route("/{id}", name="app_tag_show", methods={"GET"})
      */
-    public function show(int $id, TagRepository $tagRepository): Response
+    public function show(Tag $tag, TagRepository $tagRepository): Response
     {
-        $tag = $tagRepository->find($id);
-
         return $this->render('admin/tag/show.html.twig', [
             'tag' => $tagRepository->getTagData($tag),
         ]);
@@ -97,11 +95,9 @@ class TagController extends AbstractController
     /**
      * @Route("/{id}/edit", name="app_tag_edit", methods={"GET", "POST"})
      */
-    public function edit(Request $request, int $id, TagRepository $tagRepository, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Tag $tag, TagRepository $tagRepository, EntityManagerInterface $entityManager): Response
     {
         $locales = $this->params->get('kernel.enabled_locales');
-
-        $tag = $tagRepository->find($id);
 
         $tagData = $tagRepository->getTagData($tag);
 
@@ -140,10 +136,9 @@ class TagController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete' . $tag->getId(), $request->request->get('_token'))) {
             $tagRepository->remove($tag, true);
-
         }
 
-        $this->addFlash('success', 'User deleted successfully!');
+        $this->addFlash('success', 'Tag deleted successfully!');
 
         return $this->redirectToRoute('app_tag_index', [], Response::HTTP_SEE_OTHER);
     }
