@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Post;
 use App\Entity\PostTranslation;
 use App\Entity\Tag;
-use App\Entity\TagTranslation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
@@ -28,10 +27,11 @@ class PostRepository extends ServiceEntityRepository
     public function getPaginationQuery(string $locale): Query
     {
         return $this->createQueryBuilder('p')
-            ->select('p, pt, u')
-            ->innerJoin('p.translations', 'pt')
+            ->select('p, pt, u, t, tt')
+            ->innerJoin('p.translations', 'pt', 'WITH', 'pt.locale = :locale')
             ->innerJoin('p.author', 'u')
-            ->where('pt.locale = :locale')
+            ->leftJoin('p.tags', 't')
+            ->leftJoin('t.translations', 'tt', 'WITH', 'tt.locale = :locale')
             ->setParameter('locale', $locale)
             ->getQuery();
     }
@@ -55,25 +55,25 @@ class PostRepository extends ServiceEntityRepository
             'author' => $post->getAuthor()->getName(),
             'image_url' => $post->getImageUrl(),
             'published_at' => $post->getPublishedAt()->format('Y-m-d'),
-            'title_en' => $post->getTranslations()->filter(function(PostTranslation $translation) {
+            'title_en' => $post->getTranslations()->filter(function (PostTranslation $translation) {
                 return $translation->getLocale() === 'en';
             })->first()->getTitle(),
-            'title_hr' => $post->getTranslations()->filter(function(PostTranslation $translation) {
+            'title_hr' => $post->getTranslations()->filter(function (PostTranslation $translation) {
                 return $translation->getLocale() === 'hr';
             })->first()->getTitle(),
-            'slug_en' => $post->getTranslations()->filter(function(PostTranslation $translation) {
+            'slug_en' => $post->getTranslations()->filter(function (PostTranslation $translation) {
                 return $translation->getLocale() === 'en';
             })->first()->getSlug(),
-            'slug_hr' => $post->getTranslations()->filter(function(PostTranslation $translation) {
+            'slug_hr' => $post->getTranslations()->filter(function (PostTranslation $translation) {
                 return $translation->getLocale() === 'hr';
             })->first()->getSlug(),
-            'content_en' => $post->getTranslations()->filter(function(PostTranslation $translation) {
+            'content_en' => $post->getTranslations()->filter(function (PostTranslation $translation) {
                 return $translation->getLocale() === 'en';
             })->first()->getContent(),
-            'content_hr' => $post->getTranslations()->filter(function(PostTranslation $translation) {
+            'content_hr' => $post->getTranslations()->filter(function (PostTranslation $translation) {
                 return $translation->getLocale() === 'hr';
             })->first()->getContent(),
-            'tags' => array_map(function(Tag $tag) {
+            'tags' => array_map(function (Tag $tag) {
                 return [
                     'id' => $tag->getId(),
                     'name' => $tag->getTranslations()->first()->getName(),
