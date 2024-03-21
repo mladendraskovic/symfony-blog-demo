@@ -52,7 +52,7 @@ class TagController extends AbstractController
      */
     public function new(Request $request, TagRepository $tagRepository): Response
     {
-        $locales = $this->params->get('kernel.enabled_locales');
+        $locales = $this->params->get('available_locales');
 
         $tag = new Tag();
 
@@ -97,7 +97,7 @@ class TagController extends AbstractController
      */
     public function edit(Request $request, Tag $tag, TagRepository $tagRepository, EntityManagerInterface $entityManager): Response
     {
-        $locales = $this->params->get('kernel.enabled_locales');
+        $locales = $this->params->get('available_locales');
 
         $tagData = $tagRepository->getTagData($tag);
 

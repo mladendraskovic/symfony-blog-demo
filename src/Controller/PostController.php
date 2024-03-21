@@ -54,7 +54,7 @@ class PostController extends AbstractController
      */
     public function new(Request $request, PostRepository $postRepository, TagRepository $tagRepository): Response
     {
-        $locales = $this->params->get('kernel.enabled_locales');
+        $locales = $this->params->get('available_locales');
 
         $post = new Post();
 
@@ -108,7 +108,7 @@ class PostController extends AbstractController
      */
     public function edit(Request $request, Post $post, PostRepository $postRepository, TagRepository $tagRepository): Response
     {
-        $locales = $this->params->get('kernel.enabled_locales');
+        $locales = $this->params->get('available_locales');
 
         $postData = $postRepository->getPostData($post, $request->getLocale());
 
