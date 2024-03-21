@@ -44,6 +44,12 @@
             <td>{{ post.published_at }}</td>
         </tr>
         <tr>
+            <th class="text-nowrap">Image</th>
+            <td>
+                <img src="{{ post.image_url }}" alt="{{ post.title_en }}" style="max-height: 250px">
+            </td>
+        </tr>
+        <tr>
             <th class="text-nowrap">Tags</th>
             <td>
                 {% for tag in post.tags %}

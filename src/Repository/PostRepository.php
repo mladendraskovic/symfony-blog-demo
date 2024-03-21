@@ -53,7 +53,7 @@ class PostRepository extends ServiceEntityRepository
         return [
             'id' => $post->getId(),
             'author' => $post->getAuthor()->getName(),
-//            'image' => $post->getImage(),
+            'image_url' => $post->getImageUrl(),
             'published_at' => $post->getPublishedAt()->format('Y-m-d'),
             'title_en' => $post->getTranslations()->filter(function(PostTranslation $translation) {
                 return $translation->getLocale() === 'en';

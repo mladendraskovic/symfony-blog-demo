@@ -72,6 +72,11 @@ class Post
         return $this;
     }
 
+    public function getImageUrl(): string
+    {
+        return '/uploads/' . $this->getImage();
+    }
+
     public function getImage(): ?string
     {
         return $this->image;

@@ -7,9 +7,9 @@ use App\Entity\PostTranslation;
 use App\Form\PostType;
 use App\Repository\PostRepository;
 use App\Repository\TagRepository;
+use App\Services\FileService;
 use DateTime;
 use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -23,10 +23,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class PostController extends AbstractController
 {
     private $params;
+    private $fileService;
 
-    public function __construct(ParameterBagInterface $params)
+    public function __construct(ParameterBagInterface $params, FileService $fileService)
     {
         $this->params = $params;
+        $this->fileService = $fileService;
     }
 
     /**
@@ -64,7 +66,7 @@ class PostController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $post->setAuthor($this->getUser());
             $post->setPublishedAt(new DateTimeImmutable($form->get('published_at')->getData()));
-            $post->setImage('default.jpg');
+            $post->setImage($this->fileService->storeFile($form->get('image')->getData(), 'post-images'));
 
             $tags = $tagRepository->findBy(['id' => $form->get('tags')->getData()]);
 
@@ -117,7 +119,16 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $post->setPublishedAt(new DateTimeImmutable($form->get('published_at')->getData()));
             $post->setUpdatedAt(new DateTime());
+
+            if ($form->get('image')->getData()) {
+                if ($post->getImage()) {
+                    $this->fileService->removeFile($post->getImage());
+                }
+
+                $post->setImage($this->fileService->storeFile($form->get('image')->getData(), 'post-images'));
+            }
 
             foreach ($locales as $locale) {
                 $translation = $post->getTranslations()->filter(function (PostTranslation $translation) use ($locale) {
@@ -156,6 +167,9 @@ class PostController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $post->getId(), $request->request->get('_token'))) {
             $postRepository->remove($post, true);
 
+            if ($post->getImage()) {
+                $this->fileService->removeFile($post->getImage());
+            }
         }
 
         $this->addFlash('success', 'Post deleted successfully!');
