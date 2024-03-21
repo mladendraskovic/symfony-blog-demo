@@ -92,7 +92,7 @@ class PostType extends AbstractType
                 'label' => 'Tags',
                 'required' => false,
                 'multiple' => true,
-                'data' => $options['data'] ? array_column($options['data']['tags'], 'id') : [],
+                'data' => isset($options['data']) ? array_column($options['data']['tags'], 'id') : [],
                 'choices' => $this->tagRepository->getTagsForSelection(),
                 'constraints' => [],
             ]);
