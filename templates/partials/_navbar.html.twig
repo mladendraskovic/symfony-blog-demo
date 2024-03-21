@@ -8,17 +8,25 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ path('app_home') }}">Home</a>
+                    <a class="nav-link active" aria-current="page" href="{{ path('app_home') }}">
+                        {% trans %}Home{% endtrans %}
+                    </a>
                 </li>
                 {% if is_granted('ROLE_ADMIN') %}
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ path('app_user_index') }}">Users</a>
+                        <a class="nav-link active" aria-current="page" href="{{ path('app_user_index') }}">
+                            {% trans %}Users{% endtrans %}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ path('app_tag_index') }}">Tags</a>
+                        <a class="nav-link active" aria-current="page" href="{{ path('app_tag_index') }}">
+                            {% trans %}Tags{% endtrans %}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ path('app_post_index') }}">Posts</a>
+                        <a class="nav-link active" aria-current="page" href="{{ path('app_post_index') }}">
+                            {% trans %}Posts{% endtrans %}
+                        </a>
                     </li>
                 {% endif %}
                 {% if app.user %}
@@ -29,21 +37,29 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" data-bs-theme="light">
                             <li>
-                                <a class="dropdown-item" href="#">Profile</a>
+                                <a class="dropdown-item" href="#">
+                                    {% trans %}Profile{% endtrans %}
+                                </a>
                             </li>
                             <li>
                                 <form action="{{ path('app_logout') }}" method="POST">
-                                    <button class="dropdown-item" type="submit">Logout</button>
+                                    <button class="dropdown-item" type="submit">
+                                        {% trans %}Logout{% endtrans %}
+                                    </button>
                                 </form>
                             </li>
                         </ul>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_login') }}">Login</a>
+                        <a class="nav-link" href="{{ path('app_login') }}">
+                            {% trans %}Login{% endtrans %}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_register') }}">Register</a>
+                        <a class="nav-link" href="{{ path('app_register') }}">
+                            {% trans %}Register{% endtrans %}
+                        </a>
                     </li>
                 {% endif %}
             </ul>

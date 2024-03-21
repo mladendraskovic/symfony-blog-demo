@@ -16,6 +16,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/admin/posts")
@@ -24,11 +25,13 @@ class PostController extends AbstractController
 {
     private $params;
     private $fileService;
+    private $translator;
 
-    public function __construct(ParameterBagInterface $params, FileService $fileService)
+    public function __construct(ParameterBagInterface $params, FileService $fileService, TranslatorInterface $translator)
     {
         $this->params = $params;
         $this->fileService = $fileService;
+        $this->translator = $translator;
     }
 
     /**
@@ -84,7 +87,7 @@ class PostController extends AbstractController
 
             $postRepository->save($post, true);
 
-            $this->addFlash('success', 'Post created successfully!');
+            $this->addFlash('success', $this->translator->trans('Post created successfully!'));
 
             return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -148,7 +151,7 @@ class PostController extends AbstractController
 
             $postRepository->save($post, true);
 
-            $this->addFlash('success', 'Post updated successfully!');
+            $this->addFlash('success', $this->translator->trans('Post updated successfully!'));
 
             return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -172,7 +175,7 @@ class PostController extends AbstractController
             }
         }
 
-        $this->addFlash('success', 'Post deleted successfully!');
+        $this->addFlash('success', $this->translator->trans('Post deleted successfully!'));
 
         return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
     }

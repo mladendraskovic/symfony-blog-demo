@@ -16,14 +16,17 @@ use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Optional;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PostType extends AbstractType
 {
     private $tagRepository;
+    private $translator;
 
-    public function __construct(TagRepository $tagRepository)
+    public function __construct(TagRepository $tagRepository, TranslatorInterface $translator)
     {
         $this->tagRepository = $tagRepository;
+        $this->translator = $translator;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -32,7 +35,7 @@ class PostType extends AbstractType
 
         $builder
             ->add("title_en", TextType::class, [
-                'label' => 'Title EN',
+                'label' => $this->translator->trans('Title') . ' EN',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
@@ -40,7 +43,7 @@ class PostType extends AbstractType
                 ],
             ])
             ->add("title_hr", TextType::class, [
-                'label' => 'Title HR',
+                'label' => $this->translator->trans('Title') . ' HR',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
@@ -48,7 +51,7 @@ class PostType extends AbstractType
                 ],
             ])
             ->add("published_at", DateType::class, [
-                'label' => 'Published At',
+                'label' => $this->translator->trans('Published At'),
                 'widget' => 'single_text',
                 'input' => 'string',
                 'required' => false,
@@ -59,19 +62,19 @@ class PostType extends AbstractType
                 ],
             ])
             ->add("image", FileType::class, [
-                'label' => 'Image',
+                'label' => $this->translator->trans('Image'),
                 'required' => false,
                 'constraints' => [
                     $isUpdate ? new Optional() : new NotBlank(),
                     new File([
                         'maxSize' => '2m',
                         'mimeTypes' => ['image/*'],
-                        'mimeTypesMessage' => 'Please upload a valid image file',
+                        'mimeTypesMessage' => $this->translator->trans('Please upload a valid image file.'),
                     ]),
                 ],
             ])
             ->add("content_en", TextareaType::class, [
-                'label' => 'Content EN',
+                'label' => $this->translator->trans('Content') . ' EN',
                 'required' => true,
                 'attr' => ['rows' => 5],
                 'constraints' => [
@@ -80,7 +83,7 @@ class PostType extends AbstractType
                 ],
             ])
             ->add("content_hr", TextareaType::class, [
-                'label' => 'Content HR',
+                'label' => $this->translator->trans('Content') . ' HR',
                 'required' => true,
                 'attr' => ['rows' => 5],
                 'constraints' => [
@@ -89,7 +92,7 @@ class PostType extends AbstractType
                 ],
             ])
             ->add("tags", ChoiceType::class, [
-                'label' => 'Tags',
+                'label' => $this->translator->trans('Tags'),
                 'required' => false,
                 'multiple' => true,
                 'data' => isset($options['data']) ? array_column($options['data']['tags'], 'id') : [],

@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/admin/users")
@@ -19,9 +20,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends AbstractController
 {
     private $passwordHasher;
-    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    private $translator;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator)
     {
         $this->passwordHasher = $passwordHasher;
+        $this->translator = $translator;
     }
 
     /**
@@ -58,7 +62,7 @@ class UserController extends AbstractController
 
             $userRepository->add($user, true);
 
-            $this->addFlash('success', 'User created successfully!');
+            $this->addFlash('success', $this->translator->trans('User created successfully!'));
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -96,7 +100,7 @@ class UserController extends AbstractController
 
             $userRepository->add($user, true);
 
-            $this->addFlash('success', 'User updated successfully!');
+            $this->addFlash('success', $this->translator->trans('User updated successfully!'));
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -112,11 +116,11 @@ class UserController extends AbstractController
      */
     public function delete(Request $request, User $user, UserRepository $userRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             $userRepository->remove($user, true);
         }
 
-        $this->addFlash('success', 'User deleted successfully!');
+        $this->addFlash('success', $this->translator->trans('User deleted successfully!'));
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }

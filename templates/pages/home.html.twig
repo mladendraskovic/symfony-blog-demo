@@ -1,14 +1,14 @@
 {% extends './base.html.twig' %}
 
-{% block title %}Blog home{% endblock %}
+{% block title %}{% trans %}Homepage{% endtrans %}{% endblock %}
 
 {% block body %}
     <div class="container">
-        <h1 class="mb-4">Blog posts</h1>
+        <h1 class="mb-4">{% trans %}Homepage{% endtrans %}</h1>
 
         <form action="{{ path('app_home') }}">
             <div class="input-group mb-4">
-                <input type="text" name="q" value="{{ searchTerm }}" class="form-control" placeholder="Search posts..." aria-label="Search term" aria-describedby="button-search">
+                <input type="text" name="q" value="{{ searchTerm }}" class="form-control" placeholder="{% trans %}Search posts...{% endtrans %}" aria-label="Search term" aria-describedby="button-search">
                 <button class="btn btn-primary" type="submit" id="button-search">Search</button>
             </div>
         </form>
@@ -34,11 +34,15 @@
                                     {% endfor %}
                                 </div>
                             </div>
-                            <a href="{{ path('app_post_show', {id: post.id}) }}">Read more</a>
+                            <a href="{{ path('app_post_show', {id: post.id}) }}">
+                                {% trans %}Read more{% endtrans %}
+                            </a>
                         </div>
                         <div class="card-footer d-flex align-items-center justify-content-between gap-4">
-                            <small class="text-muted">Published on {{ post.createdAt|date('Y-m-d') }}</small>
-                            <small class="text-muted">Author: {{ post.author.name }}</small>
+                            <small class="text-muted">
+                                {% trans %}Published on{% endtrans%} {{ post.createdAt|date('Y-m-d') }}
+                            </small>
+                            <small class="text-muted">{% trans %}Author{% endtrans %}: {{ post.author.name }}</small>
                         </div>
                     </div>
                 </div>

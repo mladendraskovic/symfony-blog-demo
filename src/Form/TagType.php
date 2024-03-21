@@ -8,11 +8,15 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TagType extends AbstractType
 {
-    public function __construct()
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
     {
+        $this->translator = $translator;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -24,12 +28,12 @@ class TagType extends AbstractType
 
         $builder
             ->add("name_en", TextType::class, [
-                'label' => 'Name EN',
+                'label' => $this->translator->trans('Name') . ' EN',
                 'required' => true,
                 'constraints' => $constraints,
             ])
             ->add("name_hr", TextType::class, [
-                'label' => 'Name HR',
+                'label' => $this->translator->trans('Name') . ' HR',
                 'required' => true,
                 'constraints' => $constraints,
             ]);

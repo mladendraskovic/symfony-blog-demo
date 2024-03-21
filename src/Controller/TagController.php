@@ -14,6 +14,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/admin/tags")
@@ -21,10 +22,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class TagController extends AbstractController
 {
     private $params;
+    private $translator;
 
-    public function __construct(ParameterBagInterface $params)
+    public function __construct(ParameterBagInterface $params, TranslatorInterface $translator)
     {
         $this->params = $params;
+        $this->translator = $translator;
     }
 
     /**
@@ -71,7 +74,7 @@ class TagController extends AbstractController
 
             $tagRepository->add($tag, true);
 
-            $this->addFlash('success', 'Tag created successfully!');
+            $this->addFlash('success', $this->translator->trans('Tag created successfully!'));
 
             return $this->redirectToRoute('app_tag_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -118,7 +121,7 @@ class TagController extends AbstractController
 
             $entityManager->flush();
 
-            $this->addFlash('success', 'Tag updated successfully!');
+            $this->addFlash('success', $this->translator->trans('Tag updated successfully!'));
 
             return $this->redirectToRoute('app_tag_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -138,7 +141,7 @@ class TagController extends AbstractController
             $tagRepository->remove($tag, true);
         }
 
-        $this->addFlash('success', 'Tag deleted successfully!');
+        $this->addFlash('success', $this->translator->trans('Tag deleted successfully!'));
 
         return $this->redirectToRoute('app_tag_index', [], Response::HTTP_SEE_OTHER);
     }
