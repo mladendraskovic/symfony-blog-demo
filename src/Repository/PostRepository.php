@@ -32,7 +32,8 @@ class PostRepository extends ServiceEntityRepository
             ->innerJoin('p.author', 'u')
             ->leftJoin('p.tags', 't')
             ->leftJoin('t.translations', 'tt', 'WITH', 'tt.locale = :locale')
-            ->setParameter('locale', $locale);
+            ->setParameter('locale', $locale)
+            ->orderBy('p.publishedAt', 'DESC');
 
         if ($searchTerm) {
             $query
