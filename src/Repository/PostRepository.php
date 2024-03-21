@@ -47,11 +47,13 @@ class PostRepository extends ServiceEntityRepository
     public function findPostBySlug(string $slug, string $locale): ?Post
     {
         return $this->createQueryBuilder('p')
-            ->select('p, pt, u, t, tt')
+            ->select('p, pt, u, t, tt, c, ca')
             ->innerJoin('p.translations', 'pt', 'WITH', 'pt.locale = :locale')
             ->innerJoin('p.author', 'u')
             ->leftJoin('p.tags', 't')
             ->leftJoin('t.translations', 'tt', 'WITH', 'tt.locale = :locale')
+            ->leftJoin('p.comments', 'c')
+            ->leftJoin('c.author', 'ca')
             ->where('pt.slug = :slug')
             ->setParameter('locale', $locale)
             ->setParameter('slug', $slug)

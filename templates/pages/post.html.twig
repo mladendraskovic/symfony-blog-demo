@@ -4,6 +4,8 @@
 
 {% block body %}
     <div class="container">
+        {% include 'partials/_flash_messages.html.twig' %}
+
         <h1 class="mb-4">{{ post.translations[0].title }}</h1>
 
         <img src="{{ post.imageUrl }}" class="w-100 mb-4" alt="{{ post.translations[0].title }}">
@@ -26,5 +28,31 @@
         </div>
 
         <p style="white-space: pre-wrap">{{ post.translations[0].content }}</p>
+
+        <div class="mt-4">
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <button type="submit" class="btn btn-primary">
+                    {% trans %}Submit Comment{% endtrans %}
+                </button>
+            {{ form_end(form) }}
+        </div>
+
+        {% if post.comments|length > 0 %}
+            <h4 class="mt-4">{% trans %}Comments{% endtrans %}</h4>
+            <ul class="list-group">
+                {% for comment in post.comments %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between mb-2" style="font-size: 0.8rem">
+                            <p class="mb-0">{% trans %}Author{% endtrans %}: {{ comment.author.name }}</p>
+                            <p class="mb-0 text-muted">
+                                {% trans %}Created At{% endtrans %}: {{ comment.createdAt|date('d.m.Y H:i:s') }}
+                            </p>
+                        </div>
+                        <p class="mb-0" style="white-space: pre-wrap">{{ comment.text }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </div>
 {% endblock %}
