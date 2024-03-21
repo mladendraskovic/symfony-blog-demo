@@ -1,6 +1,6 @@
 <nav class="navbar bg-dark fixed-top navbar-expand-lg" data-bs-theme="dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">Blog</a>
+        <span class="navbar-brand">Blog Demo</span>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -29,6 +29,24 @@
                         </a>
                     </li>
                 {% endif %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        {% trans %}Language{% endtrans %}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" data-bs-theme="light">
+                        <li>
+                            <a class="dropdown-item" href="/en">
+                                {% trans %}English{% endtrans %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/hr">
+                                {% trans %}Croatian{% endtrans %}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 {% if app.user %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
