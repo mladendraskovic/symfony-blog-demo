@@ -24,16 +24,23 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-    public function getPaginationQuery(string $locale): Query
+    public function getPaginationQuery(string $locale, ?string $searchTerm = null): Query
     {
-        return $this->createQueryBuilder('p')
+        $query = $this->createQueryBuilder('p')
             ->select('p, pt, u, t, tt')
             ->innerJoin('p.translations', 'pt', 'WITH', 'pt.locale = :locale')
             ->innerJoin('p.author', 'u')
             ->leftJoin('p.tags', 't')
             ->leftJoin('t.translations', 'tt', 'WITH', 'tt.locale = :locale')
-            ->setParameter('locale', $locale)
-            ->getQuery();
+            ->setParameter('locale', $locale);
+
+        if ($searchTerm) {
+            $query
+                ->where('pt.title LIKE :searchTerm')
+                ->setParameter('searchTerm', "%$searchTerm%");
+        }
+
+        return $query->getQuery();
     }
 
     public function getPostData(Post $post, string $locale): array
