@@ -29,14 +29,16 @@
 
         <p style="white-space: pre-wrap">{{ post.translations[0].content }}</p>
 
-        <div class="mt-4">
-            {{ form_start(form) }}
-                {{ form_widget(form) }}
-                <button type="submit" class="btn btn-primary">
-                    {% trans %}Submit Comment{% endtrans %}
-                </button>
-            {{ form_end(form) }}
-        </div>
+        {% if is_granted('IS_AUTHENTICATED') %}
+            <div class="mt-4">
+                {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    <button type="submit" class="btn btn-primary">
+                        {% trans %}Submit Comment{% endtrans %}
+                    </button>
+                {{ form_end(form) }}
+            </div>
+        {% endif %}
 
         {% if post.comments|length > 0 %}
             <h4 class="mt-4">{% trans %}Comments{% endtrans %}</h4>
@@ -50,6 +52,17 @@
                             </p>
                         </div>
                         <p class="mb-0" style="white-space: pre-wrap">{{ comment.text }}</p>
+                        {% if (is_granted('IS_AUTHENTICATED') and (comment.author.id == app.user.id or is_granted('ROLE_ADMIN'))) %}
+                            <form action="{{ path('app_comment_delete', {'id': comment.id}) }}"
+                                  method="post"
+                                  onsubmit="return confirm('{% trans %}Are you sure you want to delete this comment?{% endtrans %}');"
+                            >
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}"/>
+                                <button type="submit" class="btn btn-danger btn-sm my-2">
+                                    {% trans %}Delete{% endtrans %}
+                                </button>
+                            </form>
+                        {% endif %}
                     </li>
                 {% endfor %}
             </ul>

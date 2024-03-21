@@ -57,6 +57,7 @@ class PostRepository extends ServiceEntityRepository
             ->where('pt.slug = :slug')
             ->setParameter('locale', $locale)
             ->setParameter('slug', $slug)
+            ->orderBy('c.createdAt', 'DESC')
             ->getQuery()
             ->getOneOrNullResult();
     }

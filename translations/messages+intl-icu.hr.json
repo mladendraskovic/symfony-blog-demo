@@ -72,5 +72,7 @@
     "Your comment was saved successfully.": "Vaš komentar je uspješno spremljen.",
     "Your comment": "Vaš komentar",
     "Submit Comment": "Pošalji komentar",
-    "Comments": "Komentari"
+    "Comments": "Komentari",
+    "The comment was deleted successfully.": "Komentar je uspješno izbrisan.",
+    "Are you sure you want to delete this comment?": "Jeste li sigurni da želite izbrisati ovaj komentar?"
 }
