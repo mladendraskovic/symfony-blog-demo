@@ -20,7 +20,7 @@
                         <img src="{{ post.imageUrl }}" class="card-img-top post-card-image" alt="{{ post.translations[0].title }}">
                         <div class="card-body d-flex flex-column justify-content-between">
                             <div>
-                                <a href="{{ path('app_post_show', {id: post.id}) }}" class="text-decoration-none">
+                                <a href="{{ path('app_post', {slug: post.translations[0].slug}) }}" class="text-decoration-none">
                                     <h5 class="card-title text-truncate">{{ post.translations[0].title }}</h5>
                                 </a>
                                 <p class="card-text line-clamp-2 mb-2">
@@ -34,7 +34,7 @@
                                     {% endfor %}
                                 </div>
                             </div>
-                            <a href="{{ path('app_post_show', {id: post.id}) }}">
+                            <a href="{{ path('app_post', {slug: post.translations[0].slug}) }}">
                                 {% trans %}Read more{% endtrans %}
                             </a>
                         </div>
