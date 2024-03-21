@@ -33,9 +33,15 @@ class Tag
      */
     private $user;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Post::class, mappedBy="tags")
+     */
+    private $posts;
+
     public function __construct()
     {
         $this->translations = new ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -81,6 +87,33 @@ class Tag
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->addTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        if ($this->posts->removeElement($post)) {
+            $post->removeTag($this);
+        }
 
         return $this;
     }

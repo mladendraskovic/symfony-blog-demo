@@ -39,15 +39,34 @@ class TagRepository extends ServiceEntityRepository
         return [
             'id' => $tag->getId(),
             'user' => $tag->getUser()->getName(),
-            'name_en' => $tag->getTranslations()->filter(function(TagTranslation $translation) {
+            'name_en' => $tag->getTranslations()->filter(function (TagTranslation $translation) {
                 return $translation->getLocale() === 'en';
             })->first()->getName(),
-            'name_hr' => $tag->getTranslations()->filter(function(TagTranslation $translation) {
+            'name_hr' => $tag->getTranslations()->filter(function (TagTranslation $translation) {
                 return $translation->getLocale() === 'hr';
             })->first()->getName(),
             'created_at' => $tag->getCreatedAt()->format('Y-m-d H:i:s'),
             'updated_at' => $tag->getUpdatedAt()->format('Y-m-d H:i:s'),
         ];
+    }
+
+    public function getTagsForSelection(): array
+    {
+        $tags = $this->createQueryBuilder('t')
+            ->select('t.id, tr.name')
+            ->innerJoin('t.translations', 'tr')
+            ->where('tr.locale = :locale')
+            ->setParameter('locale', 'en')
+            ->getQuery()
+            ->getArrayResult();
+
+        $results = [];
+
+        foreach ($tags as $tag) {
+            $results[$tag['name']] = $tag['id'];
+        }
+
+        return $results;
     }
 
     public function add(Tag $entity, bool $flush = false): void
