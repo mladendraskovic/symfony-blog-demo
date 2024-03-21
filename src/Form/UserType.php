@@ -49,7 +49,7 @@ class UserType extends AbstractType
                 'constraints' => [
                     new Length([
                         'min' => 6,
-                        'minMessage' => $this->translator->trans('Your password should be at least {{ limit }} characters'),
+                        'minMessage' => $this->translator->trans('Your password should be at least 6 characters'),
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),

@@ -20,7 +20,7 @@
     "You should agree to our terms.": "Trebali biste se složiti s našim uvjetima.",
     "Password": "Lozinka",
     "Please enter a password": "Molimo unesite lozinku",
-    "Your password should be at least {{ limit }} characters": "Vaša lozinka treba imati najmanje {{ limit }} znakova",
+    "Your password should be at least 6 characters": "Vaša lozinka treba imati najmanje 6 znakova",
     "Roles": "Uloge",
     "Create Tag": "Kreiraj oznaku",
     "Back to list": "Natrag na popis",

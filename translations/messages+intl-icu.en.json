@@ -20,7 +20,7 @@
     "You should agree to our terms.": "You should agree to our terms.",
     "Password": "Password",
     "Please enter a password": "Please enter a password",
-    "Your password should be at least {{ limit }} characters": "Your password should be at least {{ limit }} characters",
+    "Your password should be at least 6 characters": "Your password should be at least 6 characters",
     "Roles": "Roles",
     "Create Tag": "Create Tag",
     "Back to list": "Back to list",
