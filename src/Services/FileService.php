@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Intervention\Image\Constraint;
+use Intervention\Image\ImageManagerStatic as Image;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -36,6 +38,24 @@ class FileService
         if (file_exists($filePath)) {
             unlink($filePath);
         }
+    }
+
+    public function optimizeImage(string $path, int $width = 1270, int $height = 768): void
+    {
+        $filePath = $this->getTargetDirectoryPath($path);
+
+        if (!file_exists($filePath)) {
+            return;
+        }
+
+        $image = Image::make($filePath);
+
+        $image->resize($width, $height, function (Constraint $constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+
+        $image->save();
     }
 
     private function getTargetDirectoryPath(string $path = ''): string

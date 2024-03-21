@@ -71,6 +71,8 @@ class PostController extends AbstractController
             $post->setPublishedAt(new DateTimeImmutable($form->get('published_at')->getData()));
             $post->setImage($this->fileService->storeFile($form->get('image')->getData(), 'post-images'));
 
+            $this->fileService->optimizeImage($post->getImage());
+
             $tags = $tagRepository->findBy(['id' => $form->get('tags')->getData()]);
 
             foreach ($tags as $tag) {
@@ -131,6 +133,8 @@ class PostController extends AbstractController
                 }
 
                 $post->setImage($this->fileService->storeFile($form->get('image')->getData(), 'post-images'));
+
+                $this->fileService->optimizeImage($post->getImage());
             }
 
             foreach ($locales as $locale) {
