@@ -49,10 +49,30 @@ class Post
      */
     private $translations;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="post", orphanRemoval=true, cascade={"persist", "remove"})
+     */
+    private $comments;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="likedPosts")
+     * @ORM\JoinTable(name="post_likes")
+     */
+    private $likes;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="favoritePosts")
+     * @ORM\JoinTable(name="post_favorites")
+     */
+    private $favorites;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->translations = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -153,5 +173,51 @@ class Post
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getPost() === $this) {
+                $comment->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
     }
 }

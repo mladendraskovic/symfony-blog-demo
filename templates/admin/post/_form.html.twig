@@ -22,5 +22,7 @@
             {{ form_row(form.tags) }}
         </div>
     </div>
-    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    <button class="btn btn-primary">
+        {% trans %}Save{% endtrans %}
+    </button>
 {{ form_end(form) }}

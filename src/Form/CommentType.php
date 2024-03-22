@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Comment;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -10,7 +12,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class TagType extends AbstractType
+class CommentType extends AbstractType
 {
     private $translator;
 
@@ -21,28 +23,22 @@ class TagType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $constraints = [
-            new NotBlank(),
-            new Length(['max' => 255]),
-        ];
-
         $builder
-            ->add("name_en", TextType::class, [
-                'label' => $this->translator->trans('Name') . ' EN',
+            ->add("text", TextareaType::class, [
+                'label' => $this->translator->trans('Your comment'),
                 'required' => true,
-                'constraints' => $constraints,
-            ])
-            ->add("name_hr", TextType::class, [
-                'label' => $this->translator->trans('Name') . ' HR',
-                'required' => true,
-                'constraints' => $constraints,
+                'attr' => ['rows' => 3],
+                'constraints' => [
+                    new NotBlank(),
+                    new Length(['max' => 5000]),
+                ],
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => null,
+            'data_class' => Comment::class,
         ]);
     }
 }

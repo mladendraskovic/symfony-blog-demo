@@ -2,178 +2,69 @@
 
 namespace App\Controller;
 
-use App\Entity\Post;
-use App\Entity\PostTranslation;
-use App\Form\PostType;
+use App\Entity\Comment;
+use App\Form\CommentType;
 use App\Repository\PostRepository;
-use App\Repository\TagRepository;
-use App\Services\FileService;
-use DateTime;
-use DateTimeImmutable;
-use Knp\Component\Pager\PaginatorInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("/admin/posts")
- */
 class PostController extends AbstractController
 {
-    private $params;
-    private $fileService;
+    private $postRepository;
+    private $entityManager;
+    private $translator;
 
-    public function __construct(ParameterBagInterface $params, FileService $fileService)
+    public function __construct(PostRepository $postRepository, EntityManagerInterface $entityManager, TranslatorInterface $translator)
     {
-        $this->params = $params;
-        $this->fileService = $fileService;
+        $this->postRepository = $postRepository;
+        $this->entityManager = $entityManager;
+        $this->translator = $translator;
     }
 
     /**
-     * @Route("/", name="app_post_index", methods={"GET"})
+     * @Route("/posts/{slug}", name="app_post", methods={"GET", "POST"}))
      */
-    public function index(PostRepository $postRepository, PaginatorInterface $paginator, Request $request): Response
+    public function show(Request $request, string $slug): Response
     {
         $locale = $request->getLocale();
+        $userId = $this->getUser() ? $this->getUser()->getId() : null;
 
-        $query = $postRepository->getPaginationQuery($locale);
+        $post = $this->postRepository->findPostBySlug($slug, $locale, $userId);
+        $likesCount = $this->postRepository->getLikesCount($post->getId());
 
-        $pagination = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            10
-        );
+        if (!$post) {
+            throw $this->createNotFoundException('No post found for slug ' . $slug);
+        }
 
-        return $this->render('admin/post/index.html.twig', [
-            'pagination' => $pagination,
-        ]);
-    }
+        $comment = new Comment();
 
-    /**
-     * @Route("/new", name="app_post_new", methods={"GET", "POST"})
-     */
-    public function new(Request $request, PostRepository $postRepository, TagRepository $tagRepository): Response
-    {
-        $locales = $this->params->get('available_locales');
-
-        $post = new Post();
-
-        $form = $this->createForm(PostType::class);
+        $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $post->setAuthor($this->getUser());
-            $post->setPublishedAt(new DateTimeImmutable($form->get('published_at')->getData()));
-            $post->setImage($this->fileService->storeFile($form->get('image')->getData(), 'post-images'));
-
-            $tags = $tagRepository->findBy(['id' => $form->get('tags')->getData()]);
-
-            foreach ($tags as $tag) {
-                $post->addTag($tag);
+            if (!$this->getUser()) {
+                throw $this->createAccessDeniedException('You must be logged in to comment.');
             }
 
-            foreach ($locales as $locale) {
-                $translation = new PostTranslation();
-                $translation->setLocale($locale);
-                $translation->setTitle($form->get("title_$locale")->getData());
-                $translation->setContent($form->get("content_$locale")->getData());
-                $post->addTranslation($translation);
-            }
+            $comment->setPost($post);
+            $comment->setAuthor($this->getUser());
 
-            $postRepository->save($post, true);
+            $this->entityManager->persist($comment);
+            $this->entityManager->flush();
 
-            $this->addFlash('success', 'Post created successfully!');
+            $this->addFlash('success', $this->translator->trans('Your comment was saved successfully.'));
 
-            return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_post', ['slug' => $slug]);
         }
 
-        return $this->renderForm('admin/post/new.html.twig', [
+        return $this->render('pages/post.html.twig', [
             'post' => $post,
-            'form' => $form,
+            'likesCount' => $likesCount,
+            'form' => $form->createView()
         ]);
-    }
-
-    /**
-     * @Route("/{id}", name="app_post_show", methods={"GET"})
-     */
-    public function show(Request $request, Post $post, PostRepository $postRepository): Response
-    {
-        return $this->render('admin/post/show.html.twig', [
-            'post' => $postRepository->getPostData($post, $request->getLocale()),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}/edit", name="app_post_edit", methods={"GET", "POST"})
-     */
-    public function edit(Request $request, Post $post, PostRepository $postRepository, TagRepository $tagRepository): Response
-    {
-        $locales = $this->params->get('available_locales');
-
-        $postData = $postRepository->getPostData($post, $request->getLocale());
-
-        $form = $this->createForm(PostType::class, $postData);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $post->setPublishedAt(new DateTimeImmutable($form->get('published_at')->getData()));
-            $post->setUpdatedAt(new DateTime());
-
-            if ($form->get('image')->getData()) {
-                if ($post->getImage()) {
-                    $this->fileService->removeFile($post->getImage());
-                }
-
-                $post->setImage($this->fileService->storeFile($form->get('image')->getData(), 'post-images'));
-            }
-
-            foreach ($locales as $locale) {
-                $translation = $post->getTranslations()->filter(function (PostTranslation $translation) use ($locale) {
-                    return $translation->getLocale() === $locale;
-                })->first();
-
-                $translation->setTitle($form->get("title_$locale")->getData());
-                $translation->setContent($form->get("content_$locale")->getData());
-            }
-
-            $tags = $tagRepository->findBy(['id' => $form->get('tags')->getData()]);
-            $post->getTags()->clear();
-
-            foreach ($tags as $tag) {
-                $post->addTag($tag);
-            }
-
-            $postRepository->save($post, true);
-
-            $this->addFlash('success', 'Post updated successfully!');
-
-            return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('admin/post/edit.html.twig', [
-            'post' => $postData,
-            'form' => $form,
-        ]);
-    }
-
-    /**
-     * @Route("/{id}/delete", name="app_post_delete", methods={"POST"})
-     */
-    public function delete(Request $request, Post $post, PostRepository $postRepository): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $post->getId(), $request->request->get('_token'))) {
-            $postRepository->remove($post, true);
-
-            if ($post->getImage()) {
-                $this->fileService->removeFile($post->getImage());
-            }
-        }
-
-        $this->addFlash('success', 'Post deleted successfully!');
-
-        return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
     }
 }
