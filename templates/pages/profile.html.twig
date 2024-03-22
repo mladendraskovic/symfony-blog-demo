@@ -30,6 +30,10 @@
             </tbody>
         </table>
 
+        <a href="{{ path('app_profile_edit') }}" class="btn btn-warning mt-2">
+            {% trans %}Edit Profile{% endtrans %}
+        </a>
+
         {% if user.favoritePosts|length > 0 %}
             <div class="mt-4">
                 <h4>{% trans %}Favorites{% endtrans %}</h4>
