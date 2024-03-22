@@ -40,6 +40,18 @@
                         <button type="submit" class="btn btn-success">Like</button>
                     </form>
                 {% endif %}
+
+                {% if post.favorites|length > 0 %}
+                    <form action="{{ path('app_post_remove_favorite', {'id': post.id}) }}" method="post">
+                        <input type="hidden" name="_token" value="{{ csrf_token('remove_favorite' ~ post.id) }}"/>
+                        <button type="submit" class="btn btn-warning">Remove from favorites</button>
+                    </form>
+                {% else %}
+                    <form action="{{ path('app_post_add_favorite', {'id': post.id}) }}" method="post">
+                        <input type="hidden" name="_token" value="{{ csrf_token('add_favorite' ~ post.id) }}"/>
+                        <button type="submit" class="btn btn-success">Add to favorites</button>
+                    </form>
+                {% endif %}
             </div>
         {% endif %}
 

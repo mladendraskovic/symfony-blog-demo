@@ -63,6 +63,8 @@ class PostRepository extends ServiceEntityRepository
         if ($userId) {
             $query
                 ->leftJoin('p.likes', 'l', 'WITH', 'l.id = :userId')
+                ->leftJoin('p.favorites', 'f', 'WITH', 'f.id = :userId')
+                ->addSelect('l, f')
                 ->setParameter('userId', $userId);
         }
 
@@ -129,6 +131,22 @@ class PostRepository extends ServiceEntityRepository
     public function unlikePost(int $postId, int $userId): void
     {
         $this->getEntityManager()->createNativeQuery('DELETE FROM post_likes WHERE post_id = :postId AND user_id = :userId', new ResultSetMapping())
+            ->setParameter('postId', $postId)
+            ->setParameter('userId', $userId)
+            ->execute();
+    }
+
+    public function addPostToFavorites(int $postId, int $userId): void
+    {
+        $this->getEntityManager()->createNativeQuery('INSERT INTO post_favorites (post_id, user_id) VALUES (:postId, :userId)', new ResultSetMapping())
+            ->setParameter('postId', $postId)
+            ->setParameter('userId', $userId)
+            ->execute();
+    }
+
+    public function removePostFromFavorites(int $postId, int $userId): void
+    {
+        $this->getEntityManager()->createNativeQuery('DELETE FROM post_favorites WHERE post_id = :postId AND user_id = :userId', new ResultSetMapping())
             ->setParameter('postId', $postId)
             ->setParameter('userId', $userId)
             ->execute();
