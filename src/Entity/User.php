@@ -52,9 +52,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $comments;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Post::class, mappedBy="likes")
+     * @ORM\JoinTable(name="post_likes")
+     */
+    private $likedPosts;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->likedPosts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -183,6 +190,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($comment->getAuthor() === $this) {
                 $comment->setAuthor(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getLikedPosts(): Collection
+    {
+        return $this->likedPosts;
+    }
+
+    public function addLikedPost(Post $likedPost): self
+    {
+        if (!$this->likedPosts->contains($likedPost)) {
+            $this->likedPosts[] = $likedPost;
+            $likedPost->addLike($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLikedPost(Post $likedPost): self
+    {
+        if ($this->likedPosts->removeElement($likedPost)) {
+            $likedPost->removeLike($this);
         }
 
         return $this;
