@@ -19,13 +19,15 @@
             </p>
         </div>
 
-        <div class="d-flex align-items-center gap-2 mb-3">
-            {% for tag in post.tags %}
-                <span class="badge bg-primary">
-                    {{ tag.translations[0].name }}
-                </span>
-            {% endfor %}
-        </div>
+        {% if post.tags|length > 0 %}
+            <div class="d-flex align-items-center gap-2 mb-3">
+                {% for tag in post.tags %}
+                    <span class="badge bg-primary">
+                        {{ tag.translations[0].name }}
+                    </span>
+                {% endfor %}
+            </div>
+        {% endif %}
 
         <div class="d-flex align-items-center justify-content-between mb-3">
             <p class="text-muted mb-0">Likes: {{ likesCount }}</p>

@@ -25,6 +25,22 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         parent::__construct($registry, User::class);
     }
 
+    public function getProfileData(int $id, string $locale): User
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u, fp, fpt, lp, lpt, c')
+            ->leftJoin('u.favoritePosts', 'fp')
+            ->leftJoin('fp.translations', 'fpt', 'WITH', 'fpt.locale = :locale')
+            ->leftJoin('u.likedPosts', 'lp')
+            ->leftJoin('lp.translations', 'lpt', 'WITH', 'lpt.locale = :locale')
+            ->leftJoin('u.comments', 'c')
+            ->where('u.id = :id')
+            ->setParameter('id', $id)
+            ->setParameter('locale', $locale)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function add(User $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
