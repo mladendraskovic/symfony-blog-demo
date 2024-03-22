@@ -32,24 +32,32 @@
                 {% if post.likes|length > 0 %}
                     <form action="{{ path('app_post_unlike', {'id': post.id}) }}" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token('unlike' ~ post.id) }}"/>
-                        <button type="submit" class="btn btn-warning">Unlike</button>
+                        <button type="submit" class="btn btn-warning">
+                            {% trans %}Unlike post{% endtrans %}
+                        </button>
                     </form>
                 {% else %}
                     <form action="{{ path('app_post_like', {'id': post.id}) }}" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token('like' ~ post.id) }}"/>
-                        <button type="submit" class="btn btn-success">Like</button>
+                        <button type="submit" class="btn btn-success">
+                            {% trans %}Like post{% endtrans %}
+                        </button>
                     </form>
                 {% endif %}
 
                 {% if post.favorites|length > 0 %}
                     <form action="{{ path('app_post_remove_favorite', {'id': post.id}) }}" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token('remove_favorite' ~ post.id) }}"/>
-                        <button type="submit" class="btn btn-warning">Remove from favorites</button>
+                        <button type="submit" class="btn btn-warning">
+                            {% trans %}Remove from favorites{% endtrans %}
+                        </button>
                     </form>
                 {% else %}
                     <form action="{{ path('app_post_add_favorite', {'id': post.id}) }}" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token('add_favorite' ~ post.id) }}"/>
-                        <button type="submit" class="btn btn-success">Add to favorites</button>
+                        <button type="submit" class="btn btn-success">
+                            {% trans %}Add to favorites{% endtrans %}
+                        </button>
                     </form>
                 {% endif %}
             </div>
