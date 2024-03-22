@@ -60,12 +60,19 @@ class Post
      */
     private $likes;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="favoritePosts")
+     * @ORM\JoinTable(name="post_favorites")
+     */
+    private $favorites;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->translations = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -218,6 +225,30 @@ class Post
     public function removeLike(User $like): self
     {
         $this->likes->removeElement($like);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(User $favorite): self
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites[] = $favorite;
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(User $favorite): self
+    {
+        $this->favorites->removeElement($favorite);
 
         return $this;
     }

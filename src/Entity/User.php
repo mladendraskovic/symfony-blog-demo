@@ -58,10 +58,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $likedPosts;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Post::class, mappedBy="favorites")
+     * @ORM\JoinTable(name="post_favorites")
+     */
+    private $favoritePosts;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->likedPosts = new ArrayCollection();
+        $this->favoritePosts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -217,6 +224,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->likedPosts->removeElement($likedPost)) {
             $likedPost->removeLike($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getFavoritePosts(): Collection
+    {
+        return $this->favoritePosts;
+    }
+
+    public function addFavorite(Post $favorite): self
+    {
+        if (!$this->favoritePosts->contains($favorite)) {
+            $this->favoritePosts[] = $favorite;
+            $favorite->addFavorite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Post $favorite): self
+    {
+        if ($this->favoritePosts->removeElement($favorite)) {
+            $favorite->removeFavorite($this);
         }
 
         return $this;
