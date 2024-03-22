@@ -213,43 +213,11 @@ class Post
         return $this->likes;
     }
 
-    public function addLike(User $like): self
-    {
-        if (!$this->likes->contains($like)) {
-            $this->likes[] = $like;
-        }
-
-        return $this;
-    }
-
-    public function removeLike(User $like): self
-    {
-        $this->likes->removeElement($like);
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, User>
      */
     public function getFavorites(): Collection
     {
         return $this->favorites;
-    }
-
-    public function addFavorite(User $favorite): self
-    {
-        if (!$this->favorites->contains($favorite)) {
-            $this->favorites[] = $favorite;
-        }
-
-        return $this;
-    }
-
-    public function removeFavorite(User $favorite): self
-    {
-        $this->favorites->removeElement($favorite);
-
-        return $this;
     }
 }

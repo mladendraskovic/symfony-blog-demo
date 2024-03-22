@@ -107,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -115,7 +115,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -210,49 +210,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->likedPosts;
     }
 
-    public function addLikedPost(Post $likedPost): self
-    {
-        if (!$this->likedPosts->contains($likedPost)) {
-            $this->likedPosts[] = $likedPost;
-            $likedPost->addLike($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLikedPost(Post $likedPost): self
-    {
-        if ($this->likedPosts->removeElement($likedPost)) {
-            $likedPost->removeLike($this);
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Post>
      */
     public function getFavoritePosts(): Collection
     {
         return $this->favoritePosts;
-    }
-
-    public function addFavorite(Post $favorite): self
-    {
-        if (!$this->favoritePosts->contains($favorite)) {
-            $this->favoritePosts[] = $favorite;
-            $favorite->addFavorite($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFavorite(Post $favorite): self
-    {
-        if ($this->favoritePosts->removeElement($favorite)) {
-            $favorite->removeFavorite($this);
-        }
-
-        return $this;
     }
 }
