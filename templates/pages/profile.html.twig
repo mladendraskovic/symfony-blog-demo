@@ -27,6 +27,12 @@
                 {% set readable_roles = user.roles ? user.roles|map(role => role_mapping[role] ?? role)|join(', ') : '' %}
                 <td>{{ readable_roles }}</td>
             </tr>
+            <tr>
+                <th>{% trans %}Avatar{% endtrans %}</th>
+                <td>
+                    <img src="{{ user.avatarUrl }}" alt="{{ user.name }}" style="width: 100px; height: 100px; object-fit: cover">
+                </td>
+            </tr>
             </tbody>
         </table>
 

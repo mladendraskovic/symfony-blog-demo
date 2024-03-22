@@ -64,6 +64,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $favoritePosts;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $avatar;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -216,5 +221,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getFavoritePosts(): Collection
     {
         return $this->favoritePosts;
+    }
+
+    public function getAvatarUrl(): string
+    {
+        if ($this->avatar) {
+            return '/uploads/' . $this->avatar;
+        }
+
+        return '/images/default-avatar.png';
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
     }
 }

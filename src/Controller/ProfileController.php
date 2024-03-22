@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ProfileType;
 use App\Repository\UserRepository;
+use App\Services\FileService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +46,7 @@ class ProfileController extends AbstractController
      * @Route("/profile/edit", name="app_profile_edit", methods={"GET", "POST"}))
      * @IsGranted("IS_AUTHENTICATED")
      */
-    public function edit(Request $request): Response
+    public function edit(Request $request, FileService $fileService): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -58,6 +59,16 @@ class ProfileController extends AbstractController
                 $user->setPassword(
                     $this->passwordHasher->hashPassword($user, $password)
                 );
+            }
+
+            if ($avatar = $form->get('avatar')->getData()) {
+                if ($user->getAvatar()) {
+                    $fileService->removeFile($user->getAvatar());
+                }
+
+                $user->setAvatar($fileService->storeFile($avatar, 'avatars'));
+
+                $fileService->optimizeImage($user->getAvatar(), 500, 500);
             }
 
             $this->userRepository->add($user, true);
