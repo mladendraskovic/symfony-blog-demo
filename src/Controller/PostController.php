@@ -34,6 +34,7 @@ class PostController extends AbstractController
         $userId = $this->getUser() ? $this->getUser()->getId() : null;
 
         $post = $this->postRepository->findPostBySlug($slug, $locale, $userId);
+        $likesCount = $this->postRepository->getLikesCount($post->getId());
 
         if (!$post) {
             throw $this->createNotFoundException('No post found for slug ' . $slug);
@@ -62,6 +63,7 @@ class PostController extends AbstractController
 
         return $this->render('pages/post.html.twig', [
             'post' => $post,
+            'likesCount' => $likesCount,
             'form' => $form->createView()
         ]);
     }

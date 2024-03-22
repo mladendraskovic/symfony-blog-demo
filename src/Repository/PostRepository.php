@@ -72,6 +72,18 @@ class PostRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function getLikesCount(int $postId): int
+    {
+        return (int) $this->getEntityManager()->createQueryBuilder()
+            ->select('COUNT(l) as likes_count')
+            ->from(Post::class, 'p')
+            ->innerJoin('p.likes', 'l')
+            ->where('p.id = :id')
+            ->setParameter('id', $postId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function getPostData(Post $post, string $locale): array
     {
         $tags = $this->getEntityManager()->createQueryBuilder()
