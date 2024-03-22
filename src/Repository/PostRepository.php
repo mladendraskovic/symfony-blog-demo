@@ -74,7 +74,7 @@ class PostRepository extends ServiceEntityRepository
 
     public function getLikesCount(int $postId): int
     {
-        return (int) $this->getEntityManager()->createQueryBuilder()
+        return (int)$this->getEntityManager()->createQueryBuilder()
             ->select('COUNT(l) as likes_count')
             ->from(Post::class, 'p')
             ->innerJoin('p.likes', 'l')
@@ -181,29 +181,4 @@ class PostRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
-//    /**
-//     * @return Post[] Returns an array of Post objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Post
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }
