@@ -15,3 +15,12 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
 }
+
+.avatar-img {
+    width: 25px !important;
+    height: 25px !important;
+    margin-right: 5px !important;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+}

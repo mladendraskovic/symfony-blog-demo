@@ -59,7 +59,8 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                            aria-expanded="false">
-                            {{ app.user.name }}
+                            <img src="{{ app.user.avatarUrl }}" alt="{{ app.user.name }}" class="rounded-circle avatar-img">
+                            <span class="d-inline-block ml-3">{{ app.user.name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" data-bs-theme="light">
                             <li>

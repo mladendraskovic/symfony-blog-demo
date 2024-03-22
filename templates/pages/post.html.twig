@@ -88,7 +88,10 @@
                 {% for comment in post.comments %}
                     <li class="list-group-item">
                         <div class="d-flex justify-content-between mb-2" style="font-size: 0.8rem">
-                            <p class="mb-0">{% trans %}Author{% endtrans %}: {{ comment.author.name }}</p>
+                            <div class="d-flex align-items-center">
+                                <img src="{{ comment.author.avatarUrl }}" class="avatar-img" alt="{{ comment.author.name }}">
+                                <p class="mb-0">{% trans %}Author{% endtrans %}: {{ comment.author.name }}</p>
+                            </div>
                             <p class="mb-0 text-muted">
                                 {% trans %}Created At{% endtrans %}: {{ comment.createdAt|date('d.m.Y H:i:s') }}
                             </p>
