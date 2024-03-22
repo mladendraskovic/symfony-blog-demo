@@ -7,6 +7,7 @@ use App\Entity\PostTranslation;
 use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -44,9 +45,9 @@ class PostRepository extends ServiceEntityRepository
         return $query->getQuery();
     }
 
-    public function findPostBySlug(string $slug, string $locale): ?Post
+    public function findPostBySlug(string $slug, string $locale, ?int $userId = null): ?Post
     {
-        return $this->createQueryBuilder('p')
+        $query = $this->createQueryBuilder('p')
             ->select('p, pt, u, t, tt, c, ca')
             ->innerJoin('p.translations', 'pt', 'WITH', 'pt.locale = :locale')
             ->innerJoin('p.author', 'u')
@@ -57,8 +58,15 @@ class PostRepository extends ServiceEntityRepository
             ->where('pt.slug = :slug')
             ->setParameter('locale', $locale)
             ->setParameter('slug', $slug)
-            ->orderBy('c.createdAt', 'DESC')
-            ->getQuery()
+            ->orderBy('c.createdAt', 'DESC');
+
+        if ($userId) {
+            $query
+                ->leftJoin('p.likes', 'l', 'WITH', 'l.id = :userId')
+                ->setParameter('userId', $userId);
+        }
+
+        return $query->getQuery()
             ->getOneOrNullResult();
     }
 
@@ -108,6 +116,22 @@ class PostRepository extends ServiceEntityRepository
             'created_at' => $post->getCreatedAt()->format('Y-m-d H:i:s'),
             'updated_at' => $post->getUpdatedAt()->format('Y-m-d H:i:s'),
         ];
+    }
+
+    public function likePost(int $postId, int $userId): void
+    {
+        $this->getEntityManager()->createNativeQuery('INSERT INTO post_likes (post_id, user_id) VALUES (:postId, :userId)', new ResultSetMapping())
+            ->setParameter('postId', $postId)
+            ->setParameter('userId', $userId)
+            ->execute();
+    }
+
+    public function unlikePost(int $postId, int $userId): void
+    {
+        $this->getEntityManager()->createNativeQuery('DELETE FROM post_likes WHERE post_id = :postId AND user_id = :userId', new ResultSetMapping())
+            ->setParameter('postId', $postId)
+            ->setParameter('userId', $userId)
+            ->execute();
     }
 
     public function save(Post $entity, bool $flush = false): void

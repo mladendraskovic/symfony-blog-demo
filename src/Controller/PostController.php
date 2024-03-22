@@ -31,7 +31,9 @@ class PostController extends AbstractController
     public function show(Request $request, string $slug): Response
     {
         $locale = $request->getLocale();
-        $post = $this->postRepository->findPostBySlug($slug, $locale);
+        $userId = $this->getUser() ? $this->getUser()->getId() : null;
+
+        $post = $this->postRepository->findPostBySlug($slug, $locale, $userId);
 
         if (!$post) {
             throw $this->createNotFoundException('No post found for slug ' . $slug);

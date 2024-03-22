@@ -27,6 +27,22 @@
             {% endfor %}
         </div>
 
+        {% if is_granted('IS_AUTHENTICATED') %}
+            <div class="d-flex align-items-center gap-3 mb-3">
+                {% if post.likes|length > 0 %}
+                    <form action="{{ path('app_post_unlike', {'id': post.id}) }}" method="post">
+                        <input type="hidden" name="_token" value="{{ csrf_token('unlike' ~ post.id) }}"/>
+                        <button type="submit" class="btn btn-warning">Unlike</button>
+                    </form>
+                {% else %}
+                    <form action="{{ path('app_post_like', {'id': post.id}) }}" method="post">
+                        <input type="hidden" name="_token" value="{{ csrf_token('like' ~ post.id) }}"/>
+                        <button type="submit" class="btn btn-success">Like</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endif %}
+
         <p style="white-space: pre-wrap">{{ post.translations[0].content }}</p>
 
         {% if is_granted('IS_AUTHENTICATED') %}
