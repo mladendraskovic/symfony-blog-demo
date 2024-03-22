@@ -7,8 +7,10 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class AppFixtures extends Fixture
+class UserFixtures extends Fixture
 {
+    public const ADMIN_REFERENCE = 'admin';
+    public const USER_REFERENCE = 'user';
     private $passwordHasher;
 
     public function __construct(UserPasswordHasherInterface $passwordHasher)
@@ -18,18 +20,19 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $this->createUser($manager,'Admin', 'admin@test.com', 'admin12345', [User::ROLE_ADMIN]);
-        $this->createUser($manager,'Test User', 'test@test.com', 'test12345', [User::ROLE_USER]);
+        $this->createUser($manager, 'Admin', 'admin@test.com', 'admin12345', self::ADMIN_REFERENCE, [User::ROLE_ADMIN]);
+        $this->createUser($manager, 'Test User', 'test@test.com', 'test12345', self::USER_REFERENCE, [User::ROLE_USER]);
 
         $manager->flush();
     }
 
     private function createUser(
         ObjectManager $manager,
-        string $name,
-        string $email,
-        string $password,
-        array $roles = []
+        string        $name,
+        string        $email,
+        string        $password,
+        string        $reference,
+        array         $roles = []
     )
     {
         $user = new User();
@@ -46,5 +49,7 @@ class AppFixtures extends Fixture
         $user->setRoles($roles);
 
         $manager->persist($user);
+
+        $this->addReference($reference, $user);
     }
 }
