@@ -72,6 +72,9 @@ php bin/console doctrine:migrations:migrate
 
 # Load fixtures (use `--append` to add new fixtures to the existing data)
 php bin/console doctrine:fixtures:load
+
+# Run the messenger worker to process async messages
+php bin/console messenger:consume async
 ```
 
 Now you should be able to access the project in your browser at [http://blog.test](http://blog.test).
@@ -99,6 +102,12 @@ vagrant destroy
 ```bash
 # Clear cache
 php bin/console cache:clear
+
+# Run messenger worker to process async messages
+php bin/console messenger:consume async
+
+# Retry failed messages
+php bin/console messenger:failed:retry
 
 # Update translations
 php bin/console translation:extract --force --format=json --prefix='' --domain=messages en
