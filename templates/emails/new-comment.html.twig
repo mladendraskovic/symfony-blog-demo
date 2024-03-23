@@ -6,7 +6,7 @@
 
 <p>
     You can view the post and the comment
-    <a href="{{ url('app_post', {'slug': post.translations[0].slug}) }}">here</a>.
+    <a href="{{ url('app_post', {'_locale': locale, 'slug': post.translations[0].slug}) }}">here</a>.
 </p>
 
 <p>

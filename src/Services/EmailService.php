@@ -4,20 +4,21 @@ namespace App\Services;
 
 use App\Entity\Comment;
 use App\Entity\Post;
+use App\Message\EmailNotification;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mime\Address;
 
 class EmailService
 {
-    private $mailer;
+    private $messageBus;
 
-    public function __construct(MailerInterface $mailer)
+    public function __construct(MessageBusInterface $messageBus)
     {
-        $this->mailer = $mailer;
+        $this->messageBus = $messageBus;
     }
 
-    public function notifyPostAuthorAboutNewComment(Post $post, Comment $comment)
+    public function notifyPostAuthorAboutNewComment(Post $post, Comment $comment, string $locale): void
     {
         $email = (new TemplatedEmail())
             ->from(new Address('noreply@blog-demo.com', 'Blog Demo'))
@@ -27,8 +28,9 @@ class EmailService
             ->context([
                 'post' => $post,
                 'comment' => $comment,
+                'locale' => $locale,
             ]);
 
-        $this->mailer->send($email);
+        $this->messageBus->dispatch(new EmailNotification($email));
     }
 }

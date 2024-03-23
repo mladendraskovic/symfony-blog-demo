@@ -59,7 +59,7 @@ class PostController extends AbstractController
             $this->entityManager->persist($comment);
             $this->entityManager->flush();
 
-            $this->emailService->notifyPostAuthorAboutNewComment($post, $comment);
+            $this->emailService->notifyPostAuthorAboutNewComment($post, $comment, $locale);
 
             $this->addFlash('success', $this->translator->trans('Your comment was saved successfully.'));
 
