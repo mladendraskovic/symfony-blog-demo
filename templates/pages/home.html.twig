@@ -26,7 +26,7 @@
                                 <p class="card-text line-clamp-2 mb-2">
                                     {{ post.translations[0].content|striptags|slice(0, 200) }}
                                 </p>
-                                <div class="d-flex align-items-center gap-2 mb-2">
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                                     {% for tag in post.tags %}
                                         <span class="badge bg-primary">
                                             {{ tag.translations[0].name }}
