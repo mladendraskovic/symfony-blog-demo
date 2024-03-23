@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Repository\PostRepository;
+use App\Services\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,12 +18,14 @@ class PostController extends AbstractController
     private $postRepository;
     private $entityManager;
     private $translator;
+    private $emailService;
 
-    public function __construct(PostRepository $postRepository, EntityManagerInterface $entityManager, TranslatorInterface $translator)
+    public function __construct(PostRepository $postRepository, EntityManagerInterface $entityManager, TranslatorInterface $translator, EmailService $emailService)
     {
         $this->postRepository = $postRepository;
         $this->entityManager = $entityManager;
         $this->translator = $translator;
+        $this->emailService = $emailService;
     }
 
     /**
@@ -55,6 +58,8 @@ class PostController extends AbstractController
 
             $this->entityManager->persist($comment);
             $this->entityManager->flush();
+
+            $this->emailService->notifyPostAuthorAboutNewComment($post, $comment);
 
             $this->addFlash('success', $this->translator->trans('Your comment was saved successfully.'));
 
