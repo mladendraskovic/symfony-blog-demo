@@ -27,3 +27,6 @@ services:
         public: true
         arguments:
             $uploadDirectory: '%uploads_directory%'
+
+    App\Services\EmailService:
+        public: true
