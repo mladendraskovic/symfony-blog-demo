@@ -100,6 +100,9 @@ vagrant destroy
 ## Additional commands
 
 ```bash
+# Run tests
+php bin/phpunit
+
 # Clear cache
 php bin/console cache:clear
 
