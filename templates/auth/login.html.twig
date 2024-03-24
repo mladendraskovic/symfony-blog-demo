@@ -36,9 +36,14 @@
 
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-                    <button type="submit" class="btn btn-primary">
-                        {% trans %}Login{% endtrans %}
-                    </button>
+                    <div class="d-flex align-items-center gap-4 justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            {% trans %}Login{% endtrans %}
+                        </button>
+{#                        <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}" class="btn btn-info">#}
+{#                            Login with Google#}
+{#                        </a>#}
+                    </div>
                 </form>
 
                 <a href="{{ path('app_register') }}" class="d-block mt-4 text-center">

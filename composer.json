@@ -12,6 +12,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^2.19",
         "fakerphp/faker": "^1.23",
+        "hwi/oauth-bundle": "^2.1",
         "intervention/image": "^2.7",
         "knplabs/knp-paginator-bundle": "^5.9",
         "sensio/framework-extra-bundle": "^6.2",
