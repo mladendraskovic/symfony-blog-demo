@@ -97,6 +97,30 @@ vagrant halt
 vagrant destroy
 ```
 
+## Testing
+
+To prepare the test database, run the following commands:
+
+```bash
+# Drop the test database if it exists
+php bin/console --env=test doctrine:database:drop --force --if-exists --quiet
+
+# Create the test database
+php bin/console --env=test doctrine:database:create --no-interaction --quiet
+
+# Create the tables/columns in the test database
+php bin/console --env=test doctrine:schema:create --quiet
+
+# Load test fixtures
+php bin/console --env=test doctrine:fixtures:load --group=test --no-interaction --quiet
+```
+
+To run tests, execute the following command:
+
+```bash
+php bin/phpunit
+```
+
 ## Additional commands
 
 ```bash
