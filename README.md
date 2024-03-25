@@ -71,7 +71,7 @@ php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 
 # Load fixtures (use `--append` to add new fixtures to the existing data)
-php bin/console doctrine:fixtures:load
+php bin/console doctrine:fixtures:load --group=default
 
 # Run the messenger worker to process async messages
 php bin/console messenger:consume async

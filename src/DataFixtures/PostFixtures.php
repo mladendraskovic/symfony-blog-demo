@@ -7,11 +7,12 @@ use App\Entity\PostTranslation;
 use App\Repository\TagRepository;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class PostFixtures extends Fixture implements DependentFixtureInterface
+class PostFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     private $enFaker;
     private $hrFaker;
@@ -65,6 +66,11 @@ class PostFixtures extends Fixture implements DependentFixtureInterface
             UserFixtures::class,
             TagFixtures::class,
         ];
+    }
+
+    public static function getGroups(): array
+    {
+        return ['default'];
     }
 
     private function getPostData(): array
