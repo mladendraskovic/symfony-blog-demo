@@ -99,7 +99,13 @@ vagrant destroy
 
 ## Testing
 
-To prepare the test database, run the following commands:
+To prepare the test database, update the `.env.test` file with the correct database credentials and run the following composer script:
+
+```bash
+composer prepare-test-db
+```
+
+Or manually run the following commands:
 
 ```bash
 # Drop the test database if it exists
