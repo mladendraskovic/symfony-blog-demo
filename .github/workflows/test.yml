@@ -51,7 +51,7 @@ jobs:
 
       - name: Prepare test database
         run: |
-          php bin/console --env=test doctrine:database:create --no-interaction
+          php bin/console --env=test doctrine:database:create --no-interaction --if-not-exists
           php bin/console --env=test doctrine:schema:create --no-interaction
           php bin/console --env=test doctrine:fixtures:load --group=test --no-interaction
         env:
