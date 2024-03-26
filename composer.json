@@ -76,7 +76,7 @@
         ],
         "prepare-test-db": [
             "@php bin/console --env=test doctrine:database:drop --force --if-exists --quiet",
-            "@php bin/console --env=test doctrine:database:create --no-interaction --quiet",
+            "@php bin/console --env=test doctrine:database:create --no-interaction --if-not-exists --quiet",
             "@php bin/console --env=test doctrine:schema:create --no-interaction --quiet",
             "@php bin/console --env=test doctrine:fixtures:load --group=test --no-interaction --quiet"
         ]
