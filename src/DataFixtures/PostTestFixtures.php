@@ -12,16 +12,14 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class PostFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
+class PostTestFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
-    private $enFaker;
-    private $hrFaker;
+    private $faker;
     private $tagRepository;
 
     public function __construct(TagRepository $tagRepository)
     {
-        $this->enFaker = Factory::create();
-        $this->hrFaker = Factory::create('hr_HR');
+        $this->faker = Factory::create();
 
         $this->tagRepository = $tagRepository;
     }
@@ -64,34 +62,28 @@ class PostFixtures extends Fixture implements DependentFixtureInterface, Fixture
     {
         return [
             UserFixtures::class,
-            TagFixtures::class,
+            TagTestFixtures::class,
         ];
     }
 
     public static function getGroups(): array
     {
-        return ['default'];
+        return ['test'];
     }
 
     private function getPostData(): array
     {
-        $image = file_get_contents('https://picsum.photos/1280/768');
-
-        $imagePath = 'public/uploads/post-images/' . uniqid() . '.jpg';
-
-        file_put_contents($imagePath, $image);
-
         return [
-            'image' => str_replace('public/uploads/', '', $imagePath),
-            'publishedAt' => DateTimeImmutable::createFromMutable($this->enFaker->dateTimeBetween('-1 year', '-1 day')),
+            'image' => 'post-images/' . md5(rand()) . '.png',
+            'publishedAt' => DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('-1 year', '-1 day')),
             'translations' => [
                 'en' => [
-                    'title' => $this->enFaker->unique()->sentence(6),
-                    'content' => $this->enFaker->realText(3000),
+                    'title' => $this->faker->unique()->sentence(),
+                    'content' => $this->faker->realText(3000),
                 ],
                 'hr' => [
-                    'title' => $this->hrFaker->unique()->sentence(6),
-                    'content' => $this->hrFaker->realText(3000),
+                    'title' => $this->faker->unique()->sentence(),
+                    'content' => $this->faker->realText(3000),
                 ],
             ],
         ];

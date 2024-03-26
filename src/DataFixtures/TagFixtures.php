@@ -5,10 +5,11 @@ namespace App\DataFixtures;
 use App\Entity\Tag;
 use App\Entity\TagTranslation;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class TagFixtures extends Fixture implements DependentFixtureInterface
+class TagFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -37,6 +38,11 @@ class TagFixtures extends Fixture implements DependentFixtureInterface
         return [
             UserFixtures::class,
         ];
+    }
+
+    public static function getGroups(): array
+    {
+        return ['default'];
     }
 
     private function getTagsData(): array

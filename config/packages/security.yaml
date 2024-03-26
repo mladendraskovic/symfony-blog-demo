@@ -29,6 +29,7 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+                default_target_path: app_home
 
             remember_me:
                 secret: '%kernel.secret%' # required
@@ -50,6 +51,7 @@ security:
     access_control:
         - { path: ^/(en|hr)/admin, roles: ROLE_ADMIN }
         - { path: ^/(en|hr)/profile, roles: ROLE_USER }
+        - { path: ^/(en|hr)/logout, roles: ROLE_USER }
 
 when@test:
     security:
