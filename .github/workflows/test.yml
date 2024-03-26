@@ -19,7 +19,7 @@ jobs:
           MYSQL_PASSWORD: secret
           MYSQL_DATABASE: testing
         ports:
-          - 3306:3306
+          - 3306/tcp
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
@@ -45,6 +45,9 @@ jobs:
 
       - name: Start MySQL
         run: sudo service mysql start
+
+      - name: Wait for MySQL
+        run: sleep 5
 
       - name: Prepare test database
         run: composer prepare-test-db
