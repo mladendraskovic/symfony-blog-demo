@@ -46,12 +46,9 @@ jobs:
         run: sudo service mysql start
 
       - name: Prepare test database
-        run: |
-            php bin/console --env=test doctrine:database:create --no-interaction --quiet --if-not-exists
-            php bin/console --env=test doctrine:schema:create --no-interaction --quiet
-            php bin/console --env=test doctrine:fixtures:load --group=test --no-interaction --quiet
+        run: composer prepare-test-db
         env:
-          DATABASE_URL: mysql://root:symfony@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/testing?serverVersion=8&charset=utf8mb4
+          DATABASE_URL: mysql://root:symfony@mysql:${{ job.services.mysql.ports['3306'] }}/testing?serverVersion=8&charset=utf8mb4
 
       - name: Run tests
         run: php bin/phpunit
