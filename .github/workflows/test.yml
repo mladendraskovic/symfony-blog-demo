@@ -51,6 +51,8 @@ jobs:
 
       - name: Prepare test database
         run: composer prepare-test-db
+        env:
+          DATABASE_URL: mysql://homestead:secret@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/testing?serverVersion=8&charset=utf8mb4
 
       - name: Run tests
         run: php bin/phpunit
