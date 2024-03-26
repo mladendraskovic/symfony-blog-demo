@@ -14,8 +14,10 @@ jobs:
       mysql:
         image: mysql:8
         env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: false
           MYSQL_ROOT_PASSWORD: symfony
+          MYSQL_USER: homestead
+          MYSQL_PASSWORD: secret
+          MYSQL_DATABASE: testing
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -47,7 +49,7 @@ jobs:
       - name: Prepare test database
         run: composer prepare-test-db
         env:
-          DATABASE_URL: mysql://root:symfony@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/testing?serverVersion=8&charset=utf8mb4
+          DATABASE_URL: mysql://homestead:secret@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/testing
 
       - name: Run tests
         run: php bin/phpunit
