@@ -37,11 +37,12 @@ class PostController extends AbstractController
         $userId = $this->getUser() ? $this->getUser()->getId() : null;
 
         $post = $this->postRepository->findPostBySlug($slug, $locale, $userId);
-        $likesCount = $this->postRepository->getLikesCount($post->getId());
 
         if (!$post) {
             throw $this->createNotFoundException('No post found for slug ' . $slug);
         }
+
+        $likesCount = $this->postRepository->getLikesCount($post->getId());
 
         $comment = new Comment();
 
