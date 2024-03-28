@@ -11,10 +11,10 @@
         <img src="{{ post.imageUrl }}" class="w-100 mb-4" alt="{{ post.translations[0].title }}">
 
         <div class="d-flex align-items-center justify-content-between">
-            <p class="text-muted">
+            <p class="text-muted post-published">
                 {% trans %}Published At{% endtrans %}: {{ post.publishedAt|date('d.m.Y') }}
             </p>
-            <p class="text-muted">
+            <p class="text-muted post-author">
                 {% trans %}Author{% endtrans %}: {{ post.author.name }}
             </p>
         </div>
@@ -69,7 +69,7 @@
             {% endif %}
         </div>
 
-        <p style="white-space: pre-wrap">{{ post.translations[0].content }}</p>
+        <p class="post-content" style="white-space: pre-wrap">{{ post.translations[0].content }}</p>
 
         {% if is_granted('IS_AUTHENTICATED') %}
             <div class="mt-4">
