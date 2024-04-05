@@ -25,7 +25,11 @@ class PostControllerTest extends WebTestCase
         self::assertSelectorTextContains('p.post-published', $postTranslation->getPost()->getPublishedAt()->format('d.m.Y'));
         self::assertSelectorTextContains('p.post-author', $postTranslation->getPost()->getAuthor()->getName());
         self::assertSelectorTextContains('p.post-content', $postTranslation->getContent());
-        self::assertEquals(1, $client->getCrawler()->filter('img[src="'. $postTranslation->getPost()->getImageUrl() .'"]')->count());
+        self::assertEquals(1, $client->getCrawler()->filter('img[src="' . $postTranslation->getPost()->getImageUrl() . '"]')->count());
+
+        self::assertSelectorNotExists('.comment-form');
+        // Guest users can't like or favorite posts
+        self::assertSelectorNotExists('.post-actions');
     }
 
     public function testPostPageReturns404ForInvalidSlug(): void
