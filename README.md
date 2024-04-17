@@ -71,7 +71,7 @@ php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 
 # Load fixtures (use `--append` to add new fixtures to the existing data)
-php bin/console doctrine:fixtures:load
+php bin/console doctrine:fixtures:load --group=default
 
 # Run the messenger worker to process async messages
 php bin/console messenger:consume async
@@ -97,9 +97,42 @@ vagrant halt
 vagrant destroy
 ```
 
+## Testing
+
+To prepare the test database, update the `.env.test` file with the correct database credentials and run the following composer script:
+
+```bash
+composer prepare-test-db
+```
+
+Or manually run the following commands:
+
+```bash
+# Drop the test database if it exists
+php bin/console --env=test doctrine:database:drop --force --if-exists --quiet
+
+# Create the test database
+php bin/console --env=test doctrine:database:create --no-interaction --quiet
+
+# Create the tables/columns in the test database
+php bin/console --env=test doctrine:schema:create --quiet
+
+# Load test fixtures
+php bin/console --env=test doctrine:fixtures:load --group=test --no-interaction --quiet
+```
+
+To run tests, execute the following command:
+
+```bash
+php bin/phpunit
+```
+
 ## Additional commands
 
 ```bash
+# Run tests
+php bin/phpunit
+
 # Clear cache
 php bin/console cache:clear
 

@@ -11,10 +11,10 @@
         <img src="{{ post.imageUrl }}" class="w-100 mb-4" alt="{{ post.translations[0].title }}">
 
         <div class="d-flex align-items-center justify-content-between">
-            <p class="text-muted">
+            <p class="text-muted post-published">
                 {% trans %}Published At{% endtrans %}: {{ post.publishedAt|date('d.m.Y') }}
             </p>
-            <p class="text-muted">
+            <p class="text-muted post-author">
                 {% trans %}Author{% endtrans %}: {{ post.author.name }}
             </p>
         </div>
@@ -30,10 +30,10 @@
         {% endif %}
 
         <div class="d-flex align-items-center justify-content-between mb-3">
-            <p class="text-muted mb-0">Likes: {{ likesCount }}</p>
+            <p class="text-muted mb-0 likes-count">Likes: {{ likesCount }}</p>
 
             {% if is_granted('IS_AUTHENTICATED') %}
-                <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3 post-actions">
                     {% if post.likes|length > 0 %}
                         <form action="{{ path('app_post_unlike', {'id': post.id}) }}" method="post">
                             <input type="hidden" name="_token" value="{{ csrf_token('unlike' ~ post.id) }}"/>
@@ -51,14 +51,14 @@
                     {% endif %}
 
                     {% if post.favorites|length > 0 %}
-                        <form action="{{ path('app_post_remove_favorite', {'id': post.id}) }}" method="post">
+                        <form action="{{ path('app_post_remove_favorite', {'id': post.id}) }}" method="post" class="remove-from-favorites-form">
                             <input type="hidden" name="_token" value="{{ csrf_token('remove_favorite' ~ post.id) }}"/>
                             <button type="submit" class="btn btn-warning">
                                 {% trans %}Remove from favorites{% endtrans %}
                             </button>
                         </form>
                     {% else %}
-                        <form action="{{ path('app_post_add_favorite', {'id': post.id}) }}" method="post">
+                        <form action="{{ path('app_post_add_favorite', {'id': post.id}) }}" method="post" class="add-to-favorites-form">
                             <input type="hidden" name="_token" value="{{ csrf_token('add_favorite' ~ post.id) }}"/>
                             <button type="submit" class="btn btn-success">
                                 {% trans %}Add to favorites{% endtrans %}
@@ -69,10 +69,10 @@
             {% endif %}
         </div>
 
-        <p style="white-space: pre-wrap">{{ post.translations[0].content }}</p>
+        <p class="post-content" style="white-space: pre-wrap">{{ post.translations[0].content }}</p>
 
         {% if is_granted('IS_AUTHENTICATED') %}
-            <div class="mt-4">
+            <div class="mt-4 comment-form">
                 {{ form_start(form) }}
                     {{ form_widget(form) }}
                     <button type="submit" class="btn btn-primary">

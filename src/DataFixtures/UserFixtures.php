@@ -4,10 +4,11 @@ namespace App\DataFixtures;
 
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements FixtureGroupInterface
 {
     public const ADMIN_REFERENCE = 'admin';
     public const USER_REFERENCE = 'user';
@@ -24,6 +25,11 @@ class UserFixtures extends Fixture
         $this->createUser($manager, 'Test User', 'test@test.com', 'test12345', self::USER_REFERENCE, [User::ROLE_USER]);
 
         $manager->flush();
+    }
+
+    public static function getGroups(): array
+    {
+        return ['test', 'default'];
     }
 
     private function createUser(
